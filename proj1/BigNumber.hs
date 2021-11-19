@@ -4,7 +4,6 @@ import Text.Printf (IsChar(toChar))
 
 type BigNumber = [Int]
 
-
 scanner:: String -> BigNumber
 scanner n = algarismos (read n::Int)
 
@@ -27,4 +26,7 @@ subBN = zipWith (-)
 mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN = zipWith (*)
 
---divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
+divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
+divBN a b = (y , z)
+    where y = zipWith (div) a b
+          z = zipWith (mod) a b
