@@ -4,15 +4,19 @@ fibRec 1 = 1
 fibRec n = fibRec(n-1) + fibRec(n-2)
 
 
-{--
-fibLista :: (Integral a) => Int -> a 
-fibLista n = x!!(n-1) + x!!(n-2)
-    where x = 0:1:
---}
+
+fibLista :: (Integral a) => a -> a
+fibLista 0 = 0
+fibLista 1 = 1
+fibLista n = x!!fromIntegral n
+    where x = createList n
+
+createList :: a -> [a]
+createList n = [x | y<-[0..n], x<-[head y + y!!1..n]]
 
 
 
 
-fibListaInfinita :: (Integral a) => Int -> a
-fibListaInfinita i =  fib!!i
+fibListaInfinita :: (Integral a) => a -> a
+fibListaInfinita i =  fib!!fromIntegral i
     where fib = 0: 1: zipWith (+) fib (tail fib)
