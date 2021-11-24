@@ -31,16 +31,17 @@ output = concatMap show
 somaBN :: BigNumber -> BigNumber -> BigNumber
 somaBN x y = reverse (soma (reverse x) (reverse y))
 
-
+--estao ao contrario 123->321
 soma :: BigNumber -> BigNumber -> BigNumber
 soma []     []     = []
 soma xs     []     = xs
 soma []     ys     = ys
---soma [x]    [y]    = [(x+y)`mod`10,(x+y)`div`10]
-soma [x]    [y]    = [x+y]
+soma [x]    [y]    = [(x+y)`mod`10,(x+y)`div`10]
+soma [x0,x1] [y0,y1] =   [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10]
+soma [x0,x1] [y]   = [abs(x0+y)`mod`10, x1 + abs(x0+y)`div`10]
 soma  (x0:x1:xs) (y0:y1:ys) = abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+y0)`div`10: soma xs ys
 --n funciona para negativos nem para overflow no ultimo algarismo para n > 10
-
+--ainda faltam algns ,1->2
 
 subBN :: BigNumber -> BigNumber -> BigNumber
 subBN x y = reverse (sub (reverse x) (reverse y))
