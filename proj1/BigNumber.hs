@@ -70,14 +70,13 @@ simpleMul :: Int -> Int -> Int
 simpleMul x y = x * y
 
 mulBN :: BigNumber -> BigNumber -> BigNumber
-mulBN x y = final_ret_1
+mulBN x y = final_ret
     where 
         multiplied_list = reverse [simpleMul a b | a <- reverse y , b <- reverse x ] -- lista da multiplicação
         list_splited = splitAt (length multiplied_list `div` 2) multiplied_list -- returns a tuple with two lists
-        list_to_add_one = 0 : snd list_splited 
+        list_to_add_one = 0 : snd list_splited
         list_to_add_two = fst list_splited ++ [0]
-        final_ret_1 = somaBN list_to_add_one list_to_add_two
-
+        final_ret = somaBN list_to_add_one list_to_add_two
 -- mulBN implementation end
 
 
