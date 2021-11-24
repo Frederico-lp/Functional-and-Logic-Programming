@@ -36,12 +36,18 @@ soma :: BigNumber -> BigNumber -> BigNumber
 soma []     []     = []
 soma xs     []     = xs
 soma []     ys     = ys
-soma [x]    [y]    = [(x+y)`mod`10,(x+y)`div`10]
-soma [x0,x1] [y0,y1] =   [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10]
+soma [x]    [y]    
+    |(x + y)`div`10>0 = [(x+y)`mod`10,(x+y)`div`10]
+    |(x + y)`div`10==0 = [x+y]
+soma [x0,x1] [y0,y1] 
+    |(x1 + y1)`div`10>0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10, (x1 + y1)`div`10]
+    |(x1 + y1)`div`10==0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10]
 soma [x0,x1] [y]   = [abs(x0+y)`mod`10, x1 + abs(x0+y)`div`10]
+soma [x]    [y0, y1] = [abs(y0+x)`mod`10, y1 + abs(y0+x)`div`10]
 soma  (x0:x1:xs) (y0:y1:ys) = abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+y0)`div`10: soma xs ys
---n funciona para negativos nem para overflow no ultimo algarismo para n > 10
---ainda faltam algns ,1->2
+--NOTA: posso colocar a guarda quando for para por aquele 0
+--abs(x1+y1)`div`10 :
+--n funciona para negativos
 
 subBN :: BigNumber -> BigNumber -> BigNumber
 subBN x y = reverse (sub (reverse x) (reverse y))
@@ -51,7 +57,11 @@ sub  []     []     = []
 sub xs     []     = xs
 sub []     ys     = ys
 sub [x]    [y]    = [x-y]
+sub [x0, x1] [y] 
+    |x0 - y > 0 = [abs(x0 - y)`mod`10, x1 + abs(x0 - y)`div`10]
+    |x0 - y < 0 = [10 - abs(x0 - y)`mod`10, x1 - abs(x0 + y)`div`10 ]
 sub (x0:x1:xs) (y0:y1:ys) = abs((x0 - y0)`mod`10): (x1 - (y1 + (abs(x0+y0)`div`10)) )`mod`10: sub xs ys
+--sub (x:xs) (y:ys)   = abs((x - y)`mod`10): (head xs - (head ys + (abs(x+y)`div`10)) )`mod`10: sub xs ys
 
 --faltam patterns nestas ultimas duas, ex [1] [1] ou [1,2,3] [1,1,1]
 
@@ -95,11 +105,11 @@ divBN a b = (y , z)
 fibRecBN :: Int -> BigNumber
 fibRecBN 0 = [0]
 fibRecBN 1 = [1]
-fibRecBN n = somaBN (fibRecBN(n-1)) (fibRecBN(n-2)) 
+fibRecBN n = somaBN (fibRecBN(n-1)) (fibRecBN(n-2))
 
 fibListaBN :: Int -> BigNumber
 fibListaBN i = fib!!i
-    where fib = [0]: [1]: [somaBN (fib!!(i-1)) (fib!!(i-2)) |i<-[2..i]] 
+    where fib = [0]: [1]: [somaBN (fib!!(i-1)) (fib!!(i-2)) |i<-[2..i]]
 
 fibListaInfinitaBN :: Int -> BigNumber
 fibListaInfinitaBN i =  fib!!i
