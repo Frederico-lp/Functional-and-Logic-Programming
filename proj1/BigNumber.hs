@@ -69,32 +69,14 @@ sub (x0:x1:xs) (y0:y1:ys) = abs((x0 - y0)`mod`10): (x1 - (y1 + (abs(x0+y0)`div`1
 simpleMul :: Int -> Int -> Int 
 simpleMul x y = x * y
 
-checkDec :: Int -> Int
-checkDec x = x `div` 10
-
-mapTest :: BigNumber -> BigNumber
-mapTest x = map checkDec x
-
 mulBN :: BigNumber -> BigNumber -> BigNumber
-mulBN x y = a
+mulBN x y = final_ret_1
     where 
-        final_return = []
-        reversed_x = reverse x --lista
-        reversed_y = (reverse y) --lista
-        multiplied_list = reverse [simpleMul a b | a<-reversed_y , b<-reversed_x ] -- lista da multiplicação
+        multiplied_list = reverse [simpleMul a b | a <- reverse y , b <- reverse x ] -- lista da multiplicação
         list_splited = splitAt (length multiplied_list `div` 2) multiplied_list -- returns a tuple with two lists
-        a = fst list_splited
-        b = snd list_splited
-        --f = [head(take 1 multiplied_list_reversed)] -- 10 tirar as []
-
-        --let e = if f `div` 10 == 1
-          --          then 1 else 2
-        --f = [e]
-        --e = f `div` 10 -- 1
-        --g = tail f
-        --ret = [g]
-
-
+        list_to_add_one = 0 : snd list_splited 
+        list_to_add_two = fst list_splited ++ [0]
+        final_ret_1 = somaBN list_to_add_one list_to_add_two
 
 -- mulBN implementation end
 
