@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-module BigNumbers (BigNumber,
+module BigNumber (BigNumber,
                     scanner, algarismos, somaBN, subBN) where
 import Data.Text.Internal.Read (digitToInt)
 import Text.Printf (IsChar(toChar))
