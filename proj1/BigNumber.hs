@@ -31,12 +31,15 @@ output = concatMap show
 somaBN :: BigNumber -> BigNumber -> BigNumber
 somaBN x y = reverse (soma (reverse x) (reverse y))
 
+
 soma :: BigNumber -> BigNumber -> BigNumber
 soma []     []     = []
 soma xs     []     = xs
 soma []     ys     = ys
-soma (x0:x1:xs) (y0:y1:ys) = abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+y0)`div`10: soma xs ys
---n funciona para negativos
+--soma [x]    [y]    = [(x+y)`mod`10,(x+y)`div`10]
+soma [x]    [y]    = [x+y]
+soma  (x0:x1:xs) (y0:y1:ys) = abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+y0)`div`10: soma xs ys
+--n funciona para negativos nem para overflow no ultimo algarismo para n > 10
 
 
 subBN :: BigNumber -> BigNumber -> BigNumber
@@ -46,6 +49,7 @@ sub :: BigNumber -> BigNumber -> BigNumber
 sub  []     []     = []
 sub xs     []     = xs
 sub []     ys     = ys
+sub [x]    [y]    = [x-y]
 sub (x0:x1:xs) (y0:y1:ys) = abs((x0 - y0)`mod`10): (x1 - (y1 + (abs(x0+y0)`div`10)) )`mod`10: sub xs ys
 
 --faltam patterns nestas ultimas duas, ex [1] [1] ou [1,2,3] [1,1,1]
@@ -99,3 +103,5 @@ fibListaBN i = fib!!i
 fibListaInfinitaBN :: Int -> BigNumber
 fibListaInfinitaBN i =  fib!!i
     where fib = [0]: [1]: zipWith somaBN fib (tail fib)
+
+--em ultimo caso passo para string e para bignumb
