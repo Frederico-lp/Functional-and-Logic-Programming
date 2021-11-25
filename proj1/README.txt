@@ -54,7 +54,12 @@ Os casos de teste usados para a função foram os seguintes:
     - simpleMul 342 555, em que o output é 189810.
 
 mulBN:
-A função mulBN #explicar a função#
+A função mulBN começa por colocar numa lista revertida a multiplicação simples, usando a função simpleMul, dos
+algarismos das duas listas representativas de BigNumbers distintos e revertidos. De seguida divide a lista anterior
+a meio e guarda as duas metades num tuplo. Posteriormente adiciona um 0 no ínicio da lista guardada na segunda posição do tuplo
+e um 0 no fim da lista guardada na primeira posição do tuplo. Ambos os zeros são adicionados por motivos da soma que se segue
+posterior à multiplicação no algoritmo da multiplicação. No final, são somados os dois números resultantes da multiplicação,
+devolvendo o resultado final da multiplicação. 
 
 - Os casos teste usados para a função foram os seguintes:
     -

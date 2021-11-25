@@ -78,9 +78,9 @@ mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN x y = final_ret
     where 
         multiplied_list = reverse [simpleMul a b | a <- reverse y , b <- reverse x ] -- Põe numa lista revertida a multiplicação simples dos algarismos das duas listas representativas de BigNumbers distintos revertidos.
-        list_splited = splitAt (length multiplied_list `div` 2) multiplied_list -- Divide a lista anterior em 2 e guarda as duas metades em tuplos
+        list_splited = splitAt (length multiplied_list `div` 2) multiplied_list -- Divide a lista anterior em 2 e guarda as duas metades num tuplo.
         list_to_add_one = 0 : snd list_splited -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
-        list_to_add_two = fst list_splited ++ [0] -- Adiciona um 0 no ínicio da primeira lista, por motivos do algoritmo de multiplicação usado.
+        list_to_add_two = fst list_splited ++ [0] -- Adiciona um 0 no fim da primeira lista, por motivos do algoritmo de multiplicação usado.
         final_ret = somaBN list_to_add_one list_to_add_two -- Soma os dois números anteriores, sendo a soma o resultado final.
 -- Fim da implementação da função mulBN.
 
