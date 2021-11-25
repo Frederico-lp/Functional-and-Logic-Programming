@@ -68,19 +68,21 @@ sub (x0:x1:xs) (y0:y1:ys) = abs((x0 - y0)`mod`10): (x1 - (y1 + (abs(x0+y0)`div`1
 
 --faltam patterns nestas ultimas duas, ex [1] [1] ou [1,2,3] [1,1,1]
 
--- mulBN implementation start
+-- Começo da implementação da função simpleMul.
 simpleMul :: Int -> Int -> Int 
-simpleMul x y = x * y
+simpleMul x y = x * y                               -- Multiplicação simples de dois números inteiros.
+-- Fim da implementação da função simpleMul.
 
+-- Começo da implementação da função mulBN.
 mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN x y = final_ret
     where 
-        multiplied_list = reverse [simpleMul a b | a <- reverse y , b <- reverse x ] -- lista da multiplicação
-        list_splited = splitAt (length multiplied_list `div` 2) multiplied_list -- returns a tuple with two lists
-        list_to_add_one = 0 : snd list_splited
-        list_to_add_two = fst list_splited ++ [0]
-        final_ret = somaBN list_to_add_one list_to_add_two
--- mulBN implementation end
+        multiplied_list = reverse [simpleMul a b | a <- reverse y , b <- reverse x ] -- Põe numa lista revertida a multiplicação simples dos algarismos das duas listas representativas de BigNumbers distintos revertidos.
+        list_splited = splitAt (length multiplied_list `div` 2) multiplied_list -- Divide a lista anterior em 2 e guarda as duas metades em tuplos
+        list_to_add_one = 0 : snd list_splited -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
+        list_to_add_two = fst list_splited ++ [0] -- Adiciona um 0 no ínicio da primeira lista, por motivos do algoritmo de multiplicação usado.
+        final_ret = somaBN list_to_add_one list_to_add_two -- Soma os dois números anteriores, sendo a soma o resultado final.
+-- Fim da implementação da função mulBN.
 
 
 
