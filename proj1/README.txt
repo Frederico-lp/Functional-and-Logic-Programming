@@ -93,7 +93,34 @@ Integer: ?
 BigNumber: O limite de algarismos é o limite maximo de tamanho de listas em Haskell.
 
 
+///////////////////////////
+somaBN :: BigNumber -> BigNumber -> BigNumber
+Nesta função é feita uma chamada à funçao “soma” com os BigNumbers invertidos para pode ser feita a soma do algarismo menos significativo para o mais significativo. No fim é também invertida o BigNumber retornado pela soma para o colocar na posição correta.
+Casos de teste:
+- somaBN [5] [2,7]
+- somaBN [5] [27]
+- somaBN [9,9] [5,5]
 
+soma :: BigNumber -> BigNumber -> BigNumber
+
+Nesta função é feita uma soma sucessiva dos algarismos menos significativos e se existir overflow este é passado para o algarismo seguinte. Foi necessário criar várias guardas para os casos de overflow para não ficarem escritos 0s (zeros) no BigNumber (ex: somaBN [1,5] [1,0] seria [0,2,5] sem as guardas).
+Estas somas sucessivas são conseguidas a partir de chamadas recursivas para aceder aos vários elementos do BigNumber.
+
+- soma [5] [2,7]
+- soma [5] [27]
+- soma [9,9] [5,5]
+
+
+
+subBN :: BigNumber -> BigNumber -> BigNumber
+Nesta função é feita uma chamada à funçao “sub” com os BigNumbers invertidos para pode ser feita a soma do algarismo menos significativo para o mais significativo. No fim é também invertida o BigNumber retornado pela soma para o colocar na posição correta.
+Casos de teste: 
+-
+-
+-
+sub :: BigNumber -> BigNumber -> BigNumber
+A função de subtração é algo semelhante à de adição da parte de ser uma subtração sucessiva, ainda que as operações realizadas entre os algarismos sejam diferentes. Estão também presentes algumas guardas para os casos em que o algarismo mais significativo tem de ter em conta o carry dos algarismos anteriores-
+////////////////////////////////////////////////
 
 
 
