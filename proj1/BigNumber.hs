@@ -72,18 +72,31 @@ soma  (x0:x1:xs) (y0:y1:ys) =  abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+y0)`
 -}
 
 novaSoma :: BigNumber -> BigNumber -> BigNumber
-novaSoma a b = reverse (ajustar (zipWith (+) (reverse a)  (reverse b) )  )
+novaSoma a b = reverse (ajustar (mySomaZip (reverse a)  (reverse b) )  )
 --trocar zipwith por outra funçao
 -- ver novaSoma [1,8,0] [9,8,1]
 ajustar :: BigNumber -> BigNumber
 ajustar []  = []
+
 ajustar [x]
     |x < 10  =  [x]
     |x >= 10  =  [x`mod`10, x`div`10]
 --    |x == 0 = [0, 1]
+ajustar [x, y]
+    |x < 10 && y >= 10 = x`mod`10: ajustar [y]
+    |x < 10 && y < 10 = [x,y]
+    |x >= 10 = x`mod`10:  ajustar [y+x`div`10]
+    
 ajustar (x:xs) 
     |x < 10 = x:xs
     |x >= 10 = x`mod`10: ajustar (head xs + x`div`10: tail xs)
+
+
+mySomaZip :: BigNumber -> BigNumber -> BigNumber
+mySomaZip [] [] = []
+mySomaZip a  [] = a
+mySomaZip [] b  = b
+mySomaZip a b = head a + head b : mySomaZip (tail a) (tail b)
 
 --NOTA: posso colocar a guarda quando for para por aquele 0
 --quando algarismo mais singificativo é 10 da mal
