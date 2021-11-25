@@ -77,18 +77,31 @@ simpleMul x y = x * y                               -- Multiplicação simples d
 mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN x y = final_ret
     where 
-        multiplied_list = reverse [simpleMul a b | a <- reverse y , b <- reverse x ] -- Põe numa lista revertida a multiplicação simples dos algarismos das duas listas representativas de BigNumbers distintos revertidos.
-        list_splited = splitAt (length multiplied_list `div` 2) multiplied_list -- Divide a lista anterior em 2 e guarda as duas metades num tuplo.
-        list_to_add_one = 0 : snd list_splited -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
-        list_to_add_two = fst list_splited ++ [0] -- Adiciona um 0 no fim da primeira lista, por motivos do algoritmo de multiplicação usado.
-        final_ret = somaBN list_to_add_one list_to_add_two -- Soma os dois números anteriores, sendo a soma o resultado final.
+        multiplied_list = reverse [simpleMul a b | a <- reverse y , b <- reverse x ]    -- Põe numa lista revertida a multiplicação simples dos algarismos das duas listas representativas de BigNumbers distintos revertidos.
+        list_splited = splitAt (length multiplied_list `div` 2) multiplied_list         -- Divide a lista anterior em 2 e guarda as duas metades num tuplo.
+        list_to_add_one = 0 : snd list_splited                                          -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
+        list_to_add_two = fst list_splited ++ [0]                                       -- Adiciona um 0 no fim da primeira lista, por motivos do algoritmo de multiplicação usado.
+        final_ret = somaBN list_to_add_one list_to_add_two                              -- Soma os dois números anteriores, sendo a soma o resultado final.
 -- Fim da implementação da função mulBN.
 
 
+-- Começo da implementação da função simpleDiv.
+simpleDiv :: Int -> Int -> Int
+simpleDiv x y = x `div` y                           -- Divisão inteira simples de dois números inteiros.
+-- Fim da implementação da função simpleDiv.
 
+-- Começo da implementação da função simpleRem.
+simpleRem :: Int -> Int -> Int
+simpleRem x y = x `rem` y                           -- Resto inteiro simples de dois números inteiros
+-- Fim da implementação da função simpleRem.
 
+-- Começo da implementação da função divBN.
 divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
-divBN a b = (y , z)
-    where y = zipWith (div) a b
-          z = zipWith (mod) a b
+divBN a b = (quocient , remainder)
+    where 
+        quocient = []
+        remainder = []
+        dividend = 0
+        divisor = 0
+-- Fim da implementação da função divBN.
 
