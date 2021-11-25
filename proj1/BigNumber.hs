@@ -36,15 +36,30 @@ soma :: BigNumber -> BigNumber -> BigNumber
 soma []     []     = []
 soma xs     []     = xs
 soma []     ys     = ys
-soma [x]    [y]    
+--ate ao comentario é uma mistura de codigo novo com cenas antigas
+soma [x]    [y]
     |(x + y)`div`10>0 = [(x+y)`mod`10,(x+y)`div`10]
     |(x + y)`div`10==0 = [x+y]
-soma [x0,x1] [y0,y1] 
+soma [x0,x1] [y0,y1]
     |(x1 + y1)`div`10>0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10, (x1 + y1)`div`10]
     |(x1 + y1)`div`10==0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10]
 soma [x0,x1] [y]   = [abs(x0+y)`mod`10, x1 + abs(x0+y)`div`10]
 soma [x]    [y0, y1] = [abs(y0+x)`mod`10, y1 + abs(y0+x)`div`10]
-soma  (x0:x1:xs) (y0:y1:ys) = abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+y0)`div`10: soma xs ys
+soma (x:xs) (y:ys)
+    |x + y < 10 = x+y: soma xs ys
+    |x + y >= 10 = (x+y)`mod`10: 1 + (head xs+ head ys)`mod`10: soma (tail xs) (tail ys)
+{--
+soma [x]    [y]
+    |(x + y)`div`10>0 = [(x+y)`mod`10,(x+y)`div`10]
+    |(x + y)`div`10==0 = [x+y]
+soma [x0,x1] [y0,y1]
+    |(x1 + y1)`div`10>0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10, (x1 + y1)`div`10]
+    |(x1 + y1)`div`10==0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10]
+soma [x0,x1] [y]   = [abs(x0+y)`mod`10, x1 + abs(x0+y)`div`10]
+soma [x]    [y0, y1] = [abs(y0+x)`mod`10, y1 + abs(y0+x)`div`10]
+soma  (x0:x1:xs) (y0:y1:ys) =  abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+y0)`div`10: soma xs ys
+-}
+
 --NOTA: posso colocar a guarda quando for para por aquele 0
 --abs(x1+y1)`div`10 :
 --n funciona para negativos
@@ -57,7 +72,7 @@ sub  []     []     = []
 sub xs     []     = xs
 sub []     ys     = ys
 sub [x]    [y]    = [x-y]
-sub [x0, x1] [y] 
+sub [x0, x1] [y]
     |x0 - y > 0 = [abs(x0 - y)`mod`10, x1 + abs(x0 - y)`div`10]
     |x0 - y < 0 = [10 - abs(x0 - y)`mod`10, x1 - abs(10-x0 + y)`div`10 ]
 sub [x0, x1] [y0, y1]
@@ -69,14 +84,14 @@ sub (x0:x1:xs) (y0:y1:ys) = abs((x0 - y0)`mod`10): (x1 - (y1 + (abs(x0+y0)`div`1
 --faltam patterns nestas ultimas duas, ex [1] [1] ou [1,2,3] [1,1,1]
 
 -- Começo da implementação da função simpleMul.
-simpleMul :: Int -> Int -> Int 
+simpleMul :: Int -> Int -> Int
 simpleMul x y = x * y                               -- Multiplicação simples de dois números inteiros.
 -- Fim da implementação da função simpleMul.
 
 -- Começo da implementação da função mulBN.
 mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN x y = final_ret
-    where 
+    where
         multiplied_list = reverse [simpleMul a b | a <- reverse y , b <- reverse x ]    -- Põe numa lista revertida a multiplicação simples dos algarismos das duas listas representativas de BigNumbers distintos revertidos.
         list_splited = splitAt (length multiplied_list `div` 2) multiplied_list         -- Divide a lista anterior em 2 e guarda as duas metades num tuplo.
         list_to_add_one = 0 : snd list_splited                                          -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
@@ -98,7 +113,7 @@ simpleRem x y = x `rem` y                           -- Resto inteiro simples de 
 -- Começo da implementação da função divBN.
 divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
 divBN a b = (quocient , remainder)
-    where 
+    where
         quocient = []
         remainder = []
         dividend = 0
