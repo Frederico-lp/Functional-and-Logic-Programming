@@ -34,17 +34,28 @@ somaBN x y = reverse (soma (reverse x) (reverse y))
 --estao ao contrario 123->321
 soma :: BigNumber -> BigNumber -> BigNumber
 soma []     []     = []
-soma xs     []     = xs
-soma []     ys     = ys
---ate ao comentario é uma mistura de codigo novo com cenas antigas
+soma [x]    []     
+    |x < 10  =  [x]
+    |x > 10  =  [x`mod`10, x`div`10]
+soma []     [y]   
+    |y < 10  =  [y]
+    |y > 10  =  [y`mod`10, y`div`10]
+
 soma [x]    [y]
     |(x + y)`div`10>0 = [(x+y)`mod`10,(x+y)`div`10]
     |(x + y)`div`10==0 = [x+y]
+
 soma [x0,x1] [y0,y1]
     |(x1 + y1)`div`10>0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10, (x1 + y1)`div`10]
     |(x1 + y1)`div`10==0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10]
-soma [x0,x1] [y]   = [abs(x0+y)`mod`10, x1 + abs(x0+y)`div`10]
+
+soma [x0,x1] [y]  
+--  |x1 + abs(x0+y) + x0 >= 19 = [abs(x0+y)`mod`10, (x1 + abs(x0+y)`div`10)`mod`10, 1]
+    |(x0 + y) >= 10 = [abs(x0+y)`mod`10, x1 + abs(x0+y)`div`10]
+    | (x0 + y) < 10 = [x0+y, x1]
+
 soma [x]    [y0, y1] = [abs(y0+x)`mod`10, y1 + abs(y0+x)`div`10]
+--ate ao comentario é uma mistura de codigo novo com cenas antigas
 soma (x:xs) (y:ys)
     |x + y < 10 = x+y: soma xs ys
     |x + y >= 10 = (x+y)`mod`10: 1 + (head xs+ head ys)`mod`10: soma (tail xs) (tail ys)
@@ -59,6 +70,18 @@ soma [x0,x1] [y]   = [abs(x0+y)`mod`10, x1 + abs(x0+y)`div`10]
 soma [x]    [y0, y1] = [abs(y0+x)`mod`10, y1 + abs(y0+x)`div`10]
 soma  (x0:x1:xs) (y0:y1:ys) =  abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+y0)`div`10: soma xs ys
 -}
+
+novaSoma :: BigNumber -> BigNumber -> BigNumber
+novaSoma a b = reverse (ajustar (zipWith (+) (reverse a)  (reverse b) )  )
+
+ajustar :: BigNumber -> BigNumber
+ajustar []  = []
+ajustar [x]
+    |x < 10  =  [x]
+    |x >= 10  =  [x`mod`10, x`div`10]
+ajustar (x:xs) 
+    |x < 10 = x:xs
+    |x >= 10 = x`mod`10: ajustar (head xs + x`div`10: tail xs)
 
 --NOTA: posso colocar a guarda quando for para por aquele 0
 --abs(x1+y1)`div`10 :
