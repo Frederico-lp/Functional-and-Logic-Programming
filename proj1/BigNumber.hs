@@ -59,7 +59,10 @@ sub []     ys     = ys
 sub [x]    [y]    = [x-y]
 sub [x0, x1] [y] 
     |x0 - y > 0 = [abs(x0 - y)`mod`10, x1 + abs(x0 - y)`div`10]
-    |x0 - y < 0 = [10 - abs(x0 - y)`mod`10, x1 - abs(x0 + y)`div`10 ]
+    |x0 - y < 0 = [10 - abs(x0 - y)`mod`10, x1 - abs(10-x0 + y)`div`10 ]
+sub [x0, x1] [y0, y1]
+    |x0 - y0 > 0 = [abs(x0 - y0)`mod`10, abs(x1 - y1)`mod`10]
+    |x0 - y0 < 0 = [10 - abs(x0 - y0)`mod`10, x1 - (y1 + abs(10-x0 + y0)`div`10)]
 sub (x0:x1:xs) (y0:y1:ys) = abs((x0 - y0)`mod`10): (x1 - (y1 + (abs(x0+y0)`div`10)) )`mod`10: sub xs ys
 --sub (x:xs) (y:ys)   = abs((x - y)`mod`10): (head xs - (head ys + (abs(x+y)`div`10)) )`mod`10: sub xs ys
 
@@ -121,19 +124,3 @@ divBN a b = (y , z)
     where y = zipWith (div) a b
           z = zipWith (mod) a b
 
-
---isto tem de ir pra Fib.hs
-fibRecBN :: Int -> BigNumber
-fibRecBN 0 = [0]
-fibRecBN 1 = [1]
-fibRecBN n = somaBN (fibRecBN(n-1)) (fibRecBN(n-2))
-
-fibListaBN :: Int -> BigNumber
-fibListaBN i = fib!!i
-    where fib = [0]: [1]: [somaBN (fib!!(i-1)) (fib!!(i-2)) |i<-[2..i]]
-
-fibListaInfinitaBN :: Int -> BigNumber
-fibListaInfinitaBN i =  fib!!i
-    where fib = [0]: [1]: zipWith somaBN fib (tail fib)
-
---em ultimo caso passo para string e para bignumb
