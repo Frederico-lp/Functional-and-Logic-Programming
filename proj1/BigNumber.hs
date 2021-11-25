@@ -85,40 +85,6 @@ mulBN x y = final_ret
 
 
 
-
-
-
-
-
---posso chamar soma no final
---mulBN :: BigNumber -> BigNumber -> BigNumber
---mulBN x y = reverse (mul (reverse x) (reverse y))
---mulBN x y = somaBN(mul()) 
-{--
-
---
--}
-{-
---lista de resultados de multiplicaçoes
-mul :: BigNumber -> BigNumber -> BigNumber
-mul  []    _ = []
-mul (x0:x1:xs) y =  soma(mul' x0 y)  (mul' x1 y)
-
---concatena ultima multiplicaçao com a funçao abaixo para 
---n se perder algarismo mais significativo em case do overflow
---mulconc :: Int -> BigNumber -> BigNumber
---mulconc x  y = x * head y : reverse(tail(mul' x y))
-
--- multiplica n * xxxx
-mul' :: Int -> BigNumber -> BigNumber
-mul' x     []     = []
-mul' x (y0:y1:ys) = (x*y0)`mod`10: (x*y1)`mod`10 + (x*y0)`div`10: mul' x ys
-
---              abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+x1)`div`10: soma xs ys
-
--}
-
-
 divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
 divBN a b = (y , z)
     where y = zipWith (div) a b
