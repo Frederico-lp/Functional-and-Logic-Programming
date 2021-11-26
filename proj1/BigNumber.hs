@@ -55,28 +55,6 @@ mySomaZip [] b  = b
 mySomaZip a b = head a + head b : mySomaZip (tail a) (tail b)
 
 
---NOTA: posso colocar a guarda quando for para por aquele 0
---quando algarismo mais singificativo é 10 da mal
---abs(x1+y1)`div`10 :
---n funciona para negativos
-{-
-subBN :: BigNumber -> BigNumber -> BigNumber
-subBN x y = reverse (sub (reverse x) (reverse y))
-
-sub :: BigNumber -> BigNumber -> BigNumber
-sub  []     []     = []
-sub xs     []     = xs
-sub []     ys     = ys
-sub [x]    [y]    = [x-y]
-sub [x0, x1] [y]
-    |x0 - y > 0 = [abs(x0 - y)`mod`10, x1 + abs(x0 - y)`div`10]
-    |x0 - y < 0 = [10 - abs(x0 - y)`mod`10, x1 - abs(10-x0 + y)`div`10 ]
-sub [x0, x1] [y0, y1]
-    |x0 - y0 > 0 = [abs(x0 - y0)`mod`10, abs(x1 - y1)`mod`10]
-    |x0 - y0 < 0 = [10 - abs(x0 - y0)`mod`10, x1 - (y1 + abs(10-x0 + y0)`div`10)]
-sub (x:xs) (y:ys)   = abs((x - y)`mod`10): (head xs - (head ys + (abs(x+y)`div`10)) )`mod`10: sub (tail xs) (tail ys)
---sub (x0:x1:xs) (y0:y1:ys) = abs((x0 - y0)`mod`10): (x1 - (y1 + (abs(x0+y0)`div`10)) )`mod`10: sub xs ys
--}
 
 subBN :: BigNumber -> BigNumber -> BigNumber
 subBN a b = reverse (ajustarSub (mySubZip (reverse a)  (reverse b) )  )

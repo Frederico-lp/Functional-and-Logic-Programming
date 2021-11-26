@@ -95,31 +95,43 @@ BigNumber: O limite de algarismos é o limite maximo de tamanho de listas em Has
 
 ///////////////////////////
 somaBN :: BigNumber -> BigNumber -> BigNumber
-Nesta função é feita uma chamada à funçao “soma” com os BigNumbers invertidos para pode ser feita a soma do algarismo menos significativo para o mais significativo. No fim é também invertida o BigNumber retornado pela soma para o colocar na posição correta.
+A função começa por chamar a mySomaZip com os BigNumbers argumento invertidos. De seguida é chamada a função "ajustar" para corrigir os overflows. Por fim o BigNumber é invertido para a sua forma final.
 Casos de teste:
 - somaBN [5] [2,7]
-- somaBN [5] [27]
 - somaBN [9,9] [5,5]
+- somaBN [9,9,9,9] [1,1,1]
 
-soma :: BigNumber -> BigNumber -> BigNumber
+ajustar :: BigNumber -> BigNumber
+A lista com as somas dos BigNumbers invetida é passada como argumento e a função verifica se existe overflow, se existir este é passado ao algarismo mais significativo seguinte.
+- ajustar [5,12,13] 
+- ajustar [22,7]
 
-Nesta função é feita uma soma sucessiva dos algarismos menos significativos e se existir overflow este é passado para o algarismo seguinte. Foi necessário criar várias guardas para os casos de overflow para não ficarem escritos 0s (zeros) no BigNumber (ex: somaBN [1,5] [1,0] seria [0,2,5] sem as guardas).
-Estas somas sucessivas são conseguidas a partir de chamadas recursivas para aceder aos vários elementos do BigNumber.
-
-- soma [5] [2,7]
-- soma [5] [27]
-- soma [9,9] [5,5]
-
-
+mySomaZip :: BigNumber -> BigNumber -> BigNumber
+Soma os elementos dos dois BigNumbers sem ter em conta o overflow. Os BigNumbers podem ter diferente numero de algarismos.
 
 subBN :: BigNumber -> BigNumber -> BigNumber
-Nesta função é feita uma chamada à funçao “sub” com os BigNumbers invertidos para pode ser feita a soma do algarismo menos significativo para o mais significativo. No fim é também invertida o BigNumber retornado pela soma para o colocar na posição correta.
+A função começa por chamar a mySubZip com os BigNumbers argumento invertidos. De seguida é chamada a função "ajustarSub" para corrigir os valores negativos. Por fim o BigNumber é invertido para a sua forma final.
 Casos de teste: 
--
--
--
-sub :: BigNumber -> BigNumber -> BigNumber
-A função de subtração é algo semelhante à de adição da parte de ser uma subtração sucessiva, ainda que as operações realizadas entre os algarismos sejam diferentes. Estão também presentes algumas guardas para os casos em que o algarismo mais significativo tem de ter em conta o carry dos algarismos anteriores-
+- subBN [5,0] [5,5]
+- subBN [1,1,1,1] [9,9,9]
+
+ajustarSub :: BigNumber -> BigNumber
+A lista com a subtração dos BigNumbers invetida é passada como argumento e a função verifica se existe numeros menores que 0. Se existir o algarismo mais significativo seguinte é alterado.
+
+
+mySubZip :: BigNumber -> BigNumber -> BigNumber
+Subtrai os elementos dos dois BigNumbers sem ter em conta os numeros negativos. Os BigNumbers podem ter diferente numero de algarismos.
+
+
+
+divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
+Função chama a função auxiliar divAux para calcular o quociente da divisão e utiliza esse valor para calcular o resto.
+
+divAux :: BigNumber -> BigNumber -> BigNumber -> BigNumber
+Verifica se o dividendo é maior ou igual ao divisor, se for "incrementa" o contador (faz uma nova chamada a função com o contador incrementado) e subtrai o dividendo ao divisor. Esta operação repete-se enqaunto o dividendo for maior ou igual ao divisor
+
+largerThan :: BigNumber -> BigNumber -> Bool
+Verifica se o primeiro argumento é maior ou igual ao segundo
 ////////////////////////////////////////////////
 
 
