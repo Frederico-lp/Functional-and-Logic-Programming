@@ -43,8 +43,8 @@ ajustar [x, y]
     |x < 10 && y >= 10 = x`mod`10: ajustar [y]
     |x < 10 && y < 10 = [x,y]
     |x >= 10 = x`mod`10:  ajustar [y+x`div`10]
-    
-ajustar (x:xs) 
+
+ajustar (x:xs)
     |x < 10 = x: ajustar xs
     |x >= 10 = x`mod`10: ajustar (head xs + x`div`10: tail xs)
 
@@ -79,7 +79,33 @@ sub (x:xs) (y:ys)   = abs((x - y)`mod`10): (head xs - (head ys + (abs(x+y)`div`1
 -}
 
 subBN :: BigNumber -> BigNumber -> BigNumber
-subBN a b = reverse (ajustar (mySomaZip (reverse a)  (reverse b) )  )
+subBN a b = reverse (ajustarSub (mySubZip (reverse a)  (reverse b) )  )
+
+ajustarSub :: BigNumber -> BigNumber
+ajustarSub []  = []
+
+ajustarSub [x]
+    |x > 0 = [x]
+    |x < 0 = [x+1]
+--    |x >= 0  =  [x]
+--    |x < 10  =  [x`mod`10, x`div`10]
+--    |x == 0 = [0, 1]
+ajustarSub [x, y]
+    |x >= 0 && y == 0 = [x]
+    |x >= 0 = x: ajustar [y]
+    |x < 0 && y == 0 = [x]
+    |x < 0 && y - 1 == 0 = [10 - abs x]
+    |x < 0 && y - 1 < 0 = 10 - abs x: ajustar [y-1]
+
+ajustarSub (x:xs)
+    |x <  0 = 10 - abs x :ajustarSub (head xs - 1 : tail xs)
+    |x >= 0 = x : ajustarSub xs
+
+mySubZip :: BigNumber -> BigNumber -> BigNumber
+mySubZip [] [] = []
+mySubZip a  [] = a
+mySubZip [] b  = b
+mySubZip a b = head a - head b : mySubZip (tail a) (tail b)
 
 
 
@@ -107,6 +133,7 @@ simpleDiv :: Int -> Int -> Int
 simpleDiv x y = x `div` y                           -- Divisão inteira simples de dois números inteiros.
 -- Fim da implementação da função simpleDiv.
 
+{-
 -- Começo da implementação da função simpleRem.
 simpleRem :: Int -> Int -> Int
 simpleRem x y = x `rem` y                           -- Resto inteiro simples de dois números inteiros
@@ -121,4 +148,23 @@ divBN a b = (quocient , remainder)
         dividend = 0
         divisor = 0
 -- Fim da implementação da função divBN.
+-}
+
+--divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
+--divBN a b = ( c, (a - b*c ))
+--    where c = (divAux a b)
+
+{-
+--quociente
+dixAux :: BigNumber -> BigNumber -> Int
+divAux a b = if subBN(a b) != [0] 
+                then divBN (subBN (a b) b)
+            else [a]
+-}
+
+divAux :: BigNumber -> BigNumber -> Int -> Int
+divAux a b i = divAux (subBN a b) b (i+1)
+
+
+
 
