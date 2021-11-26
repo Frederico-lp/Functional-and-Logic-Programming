@@ -116,15 +116,39 @@ simpleMul :: Int -> Int -> Int
 simpleMul x y = x * y                               -- Multiplicação simples de dois números inteiros.
 -- Fim da implementação da função simpleMul.
 
+checkNegSolo :: Int -> Bool
+checkNegSolo x = x < 0
+
+checkNeg :: Int -> Int -> Bool 
+checkNeg x y = x < 0 && y < 0
+
+changeNeg :: BigNumber -> BigNumber
+changeNeg x = ret
+    where
+        ret = [head x * (-1)] ++ [c | c <- reverse (take ((length x) - 1) (reverse x ))]
+
+xor :: Bool -> Bool -> Bool
+xor x y | x == True && y == False = True
+        | x == False && y == True = True
+        | otherwise = False
+
 -- Começo da implementação da função mulBN.
 mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN x y = final_ret
     where
-        multiplied_list = reverse [simpleMul a b | a <- reverse y , b <- reverse x ]    -- Põe numa lista revertida a multiplicação simples dos algarismos das duas listas representativas de BigNumbers distintos revertidos.
-        list_splited = splitAt (length multiplied_list `div` 2) multiplied_list         -- Divide a lista anterior em 2 e guarda as duas metades num tuplo.
-        list_to_add_one = 0 : snd list_splited                                          -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
-        list_to_add_two = fst list_splited ++ [0]                                       -- Adiciona um 0 no fim da primeira lista, por motivos do algoritmo de multiplicação usado.
-        final_ret = somaBN list_to_add_one list_to_add_two                              -- Soma os dois números anteriores, sendo a soma o resultado final.
+        neg_check_list_one = checkNegSolo (head x) 
+        neg_check_list_two = checkNegSolo (head y)
+        aux_list_1 = if neg_check_list_one
+                        then changeNeg x else x
+        aux_list_2 = if neg_check_list_two
+                        then changeNeg y else y
+        multiplied_list = reverse [simpleMul a b | a <- reverse aux_list_2 , b <- reverse aux_list_1 ]    -- Põe numa lista revertida a multiplicação simples dos algarismos das duas listas representativas de BigNumbers distintos revertidos.
+        list_splited = splitAt (length multiplied_list `div` 2) multiplied_list                           -- Divide a lista anterior em 2 e guarda as duas metades num tuplo.
+        list_to_add_one = 0 : snd list_splited                                                            -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
+        list_to_add_two = fst list_splited ++ [0]                                                         -- Adiciona um 0 no fim da primeira lista, por motivos do algoritmo de multiplicação usado.
+        final_ret = if xor neg_check_list_one neg_check_list_two                                                                    
+                        then (changeNeg (novaSoma list_to_add_one list_to_add_two))
+                        else novaSoma list_to_add_one list_to_add_two               
 -- Fim da implementação da função mulBN.
 
 
