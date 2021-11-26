@@ -147,8 +147,8 @@ mulBN x y = final_ret
         list_to_add_one = 0 : snd list_splited                                                            -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
         list_to_add_two = fst list_splited ++ [0]                                                         -- Adiciona um 0 no fim da primeira lista, por motivos do algoritmo de multiplicação usado.
         final_ret = if xor neg_check_list_one neg_check_list_two                                                                    
-                        then (changeNeg (novaSoma list_to_add_one list_to_add_two))
-                        else novaSoma list_to_add_one list_to_add_two               
+                        then (changeNeg (somaBN list_to_add_one list_to_add_two))
+                        else somaBN list_to_add_one list_to_add_two               
 -- Fim da implementação da função mulBN.
 
 
