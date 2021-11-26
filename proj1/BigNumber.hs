@@ -119,7 +119,7 @@ simpleMul x y = x * y                               -- Multiplicação simples d
 checkNegSolo :: Int -> Bool
 checkNegSolo x = x < 0
 
-checkNeg :: Int -> Int -> Bool 
+checkNeg :: Int -> Int -> Bool
 checkNeg x y = x < 0 && y < 0
 
 changeNeg :: BigNumber -> BigNumber
@@ -136,7 +136,7 @@ xor x y | x == True && y == False = True
 mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN x y = final_ret
     where
-        neg_check_list_one = checkNegSolo (head x) 
+        neg_check_list_one = checkNegSolo (head x)
         neg_check_list_two = checkNegSolo (head y)
         aux_list_1 = if neg_check_list_one
                         then changeNeg x else x
@@ -146,9 +146,9 @@ mulBN x y = final_ret
         list_splited = splitAt (length multiplied_list `div` 2) multiplied_list                           -- Divide a lista anterior em 2 e guarda as duas metades num tuplo.
         list_to_add_one = 0 : snd list_splited                                                            -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
         list_to_add_two = fst list_splited ++ [0]                                                         -- Adiciona um 0 no fim da primeira lista, por motivos do algoritmo de multiplicação usado.
-        final_ret = if xor neg_check_list_one neg_check_list_two                                                                    
+        final_ret = if xor neg_check_list_one neg_check_list_two
                         then (changeNeg (somaBN list_to_add_one list_to_add_two))
-                        else somaBN list_to_add_one list_to_add_two               
+                        else somaBN list_to_add_one list_to_add_two
 -- Fim da implementação da função mulBN.
 
 
@@ -174,9 +174,9 @@ divBN a b = (quocient , remainder)
 -- Fim da implementação da função divBN.
 -}
 
---divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
---divBN a b = ( c, (a - b*c ))
---    where c = (divAux a b)
+divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
+divBN a b = (c, subBN a (mulBN b c ))
+    where c = divAux a b [0]
 
 {-
 --quociente
@@ -186,8 +186,18 @@ divAux a b = if subBN(a b) != [0]
             else [a]
 -}
 
-divAux :: BigNumber -> BigNumber -> Int -> Int
-divAux a b i = divAux (subBN a b) b (i+1)
+divAux :: BigNumber -> BigNumber -> BigNumber -> BigNumber
+divAux a b i
+    |largerThan a b =  divAux (subBN a b) b (somaBN i [1])
+    |otherwise = i
+
+
+largerThan :: BigNumber -> BigNumber -> Bool
+largerThan (x:xs) (y:ys)
+    |length (x:xs) > length (y:ys) =   True
+    |length xs == length ys && x > y = True
+    |length xs == length ys && x == y = largerThan  xs ys
+    |otherwise = False
 
 
 
