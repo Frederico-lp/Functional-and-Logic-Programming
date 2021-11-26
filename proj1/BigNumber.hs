@@ -180,4 +180,9 @@ largerThan (x:xs) (y:ys)
 
 
 
+safeDivBN :: BigNumber -> BigNumber -> Maybe (BigNumber, BigNumber)
+safeDivBN x [0] = Nothing 
+safeDivBN x y = Just (divBN x y) 
+
+
 
