@@ -4,7 +4,6 @@ module BigNumber (BigNumber,
 import Data.Text.Internal.Read (digitToInt)
 import Text.Printf (IsChar(toChar))
 import Data.Time.Format.ISO8601 (yearFormat)
-import Distribution.Compat.Lens (_1)
 
 type BigNumber = [Int]
 
@@ -57,33 +56,7 @@ mySomaZip a b = head a + head b : mySomaZip (tail a) (tail b)
 
 
 subBN :: BigNumber -> BigNumber -> BigNumber
-subBN a b = reverse (ajustarSub (mySubZip (reverse a)  (reverse b) )  )
-
-ajustarSub :: BigNumber -> BigNumber
-ajustarSub []  = []
-
-ajustarSub [x]
-    |x > 0 = [x]
-    |x < 0 = [x+1]
---    |x >= 0  =  [x]
---    |x < 10  =  [x`mod`10, x`div`10]
---    |x == 0 = [0, 1]
-ajustarSub [x, y]
-    |x >= 0 && y == 0 = [x]
-    |x >= 0 = x: ajustar [y]
-    |x < 0 && y == 0 = [x]
-    |x < 0 && y - 1 == 0 = [10 - abs x]
-    |x < 0 && y - 1 < 0 = 10 - abs x: ajustar [y-1]
-
-ajustarSub (x:xs)
-    |x <  0 = 10 - abs x :ajustarSub (head xs - 1 : tail xs)
-    |x >= 0 = x : ajustarSub xs
-
-mySubZip :: BigNumber -> BigNumber -> BigNumber
-mySubZip [] [] = []
-mySubZip a  [] = a
-mySubZip [] b  = b
-mySubZip a b = head a - head b : mySubZip (tail a) (tail b)
+subBN a b = reverse (ajustar (mySomaZip (reverse a)  (reverse b) )  )
 
 
 
@@ -110,6 +83,27 @@ xor x y | x == True && y == False = True
         | x == False && y == True = True
         | otherwise = False
 
+splitAtLenght :: BigNumber -> Int -> [BigNumber]
+splitAtLenght bn len = if length bn == len
+                            then [bn]
+                            else ret
+                                where
+                                    aux_list = splitAt len bn
+                                    ret = fst aux_list : splitAtLenght (snd aux_list) len
+
+addNzeros :: Int -> BigNumber -> BigNumber
+addNzeros 0 bn = bn
+addNzeros 1 bn = bn ++ [0]
+addNzeros n bn = addNzeros (n-1) (bn ++ [0])
+
+indexAt :: [BigNumber] -> Int -> [BigNumber]
+indexAt [] _ = []
+indexAt (bn_list:bn_list_xs) i = addNzeros i bn_list : indexAt bn_list_xs (i+1)
+
+somaRec :: [BigNumber] -> BigNumber
+somaRec [] = [0]
+somaRec (bn:bns) = somaBN bn (somaRec bns)
+
 -- Começo da implementação da função mulBN.
 mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN x y = final_ret
@@ -120,13 +114,15 @@ mulBN x y = final_ret
                         then changeNeg x else x
         aux_list_2 = if neg_check_list_two
                         then changeNeg y else y
-        multiplied_list = reverse [simpleMul a b | a <- reverse aux_list_2 , b <- reverse aux_list_1 ]    -- Põe numa lista revertida a multiplicação simples dos algarismos das duas listas representativas de BigNumbers distintos revertidos.
-        list_splited = splitAt (length multiplied_list `div` 2) multiplied_list                           -- Divide a lista anterior em 2 e guarda as duas metades num tuplo.
-        list_to_add_one = 0 : snd list_splited                                                            -- Adiciona um 0 no ínicio da segunda lista, por motivos do algoritmo de multiplicação usado.
-        list_to_add_two = fst list_splited ++ [0]                                                         -- Adiciona um 0 no fim da primeira lista, por motivos do algoritmo de multiplicação usado.
+        multiplied_list = reverse [simpleMul a b | a <- reverse aux_list_2 , b <- reverse aux_list_1 ]
+        list_splited = if length x > length y
+                            then reverse (splitAtLenght multiplied_list (length x))
+                            else reverse (splitAtLenght multiplied_list (length y))
+        list_with_zeros = indexAt list_splited 0
         final_ret = if xor neg_check_list_one neg_check_list_two
-                        then (changeNeg (somaBN list_to_add_one list_to_add_two))
-                        else somaBN list_to_add_one list_to_add_two
+                        then changeNeg (somaRec list_with_zeros)
+                        else somaRec list_with_zeros
+                        
 -- Fim da implementação da função mulBN.
 
 
@@ -135,22 +131,11 @@ simpleDiv :: Int -> Int -> Int
 simpleDiv x y = x `div` y                           -- Divisão inteira simples de dois números inteiros.
 -- Fim da implementação da função simpleDiv.
 
-{-
 -- Começo da implementação da função simpleRem.
 simpleRem :: Int -> Int -> Int
 simpleRem x y = x `rem` y                           -- Resto inteiro simples de dois números inteiros
 -- Fim da implementação da função simpleRem.
 
--- Começo da implementação da função divBN.
-divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
-divBN a b = (quocient , remainder)
-    where
-        quocient = []
-        remainder = []
-        dividend = 0
-        divisor = 0
--- Fim da implementação da função divBN.
--}
 
 divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
 divBN a b = (c, subBN a (mulBN c b ) )
@@ -181,8 +166,8 @@ largerThan (x:xs) (y:ys)
 
 
 safeDivBN :: BigNumber -> BigNumber -> Maybe (BigNumber, BigNumber)
-safeDivBN x [0] = Nothing 
-safeDivBN x y = Just (divBN x y) 
+safeDivBN x [0] = Nothing
+safeDivBN x y = Just (divBN x y)
 
 
 
