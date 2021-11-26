@@ -10,7 +10,8 @@ fibLista n = fib !! fromIntegral n
     where fib = 0: 1: [fib!! (fromIntegral i-1) + fib !! (fromIntegral i-2) | i<-[2..n]]
 
 
-fibListaInfinita :: (Integral a) => a -> a
+--fibListaInfinita :: (Integral a) => a -> a
+fibListaInfinita :: Integer -> Integer
 fibListaInfinita i =  fib!!fromIntegral i
     where fib = 0: 1: zipWith (+) fib (tail fib)
 
