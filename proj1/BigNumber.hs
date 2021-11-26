@@ -29,50 +29,7 @@ output :: BigNumber -> String
 output = concatMap show
 
 somaBN :: BigNumber -> BigNumber -> BigNumber
-somaBN x y = reverse (soma (reverse x) (reverse y))
-
---estao ao contrario 123->321
-soma :: BigNumber -> BigNumber -> BigNumber
-soma []     []     = []
-soma [x]    []     
-    |x < 10  =  [x]
-    |x > 10  =  [x`mod`10, x`div`10]
-soma []     [y]   
-    |y < 10  =  [y]
-    |y > 10  =  [y`mod`10, y`div`10]
-
-soma [x]    [y]
-    |(x + y)`div`10>0 = [(x+y)`mod`10,(x+y)`div`10]
-    |(x + y)`div`10==0 = [x+y]
-
-soma [x0,x1] [y0,y1]
-    |(x1 + y1)`div`10>0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10, (x1 + y1)`div`10]
-    |(x1 + y1)`div`10==0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10]
-
-soma [x0,x1] [y]  
---  |x1 + abs(x0+y) + x0 >= 19 = [abs(x0+y)`mod`10, (x1 + abs(x0+y)`div`10)`mod`10, 1]
-    |(x0 + y) >= 10 = [abs(x0+y)`mod`10, x1 + abs(x0+y)`div`10]
-    | (x0 + y) < 10 = [x0+y, x1]
-
-soma [x]    [y0, y1] = [abs(y0+x)`mod`10, y1 + abs(y0+x)`div`10]
---ate ao comentario é uma mistura de codigo novo com cenas antigas
-soma (x:xs) (y:ys)
-    |x + y < 10 = x+y: soma xs ys
-    |x + y >= 10 = (x+y)`mod`10: 1 + (head xs+ head ys)`mod`10: soma (tail xs) (tail ys)
-{--
-soma [x]    [y]
-    |(x + y)`div`10>0 = [(x+y)`mod`10,(x+y)`div`10]
-    |(x + y)`div`10==0 = [x+y]
-soma [x0,x1] [y0,y1]
-    |(x1 + y1)`div`10>0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10, (x1 + y1)`div`10]
-    |(x1 + y1)`div`10==0 = [abs(x0+y0)`mod`10, (x1 + y1)`mod`10 + abs(x0+y0)`div`10]
-soma [x0,x1] [y]   = [abs(x0+y)`mod`10, x1 + abs(x0+y)`div`10]
-soma [x]    [y0, y1] = [abs(y0+x)`mod`10, y1 + abs(y0+x)`div`10]
-soma  (x0:x1:xs) (y0:y1:ys) =  abs(x0+y0)`mod`10: (x1 + y1)`mod`10 + abs(x0+y0)`div`10: soma xs ys
--}
-
-novaSoma :: BigNumber -> BigNumber -> BigNumber
-novaSoma a b = reverse (ajustar (mySomaZip (reverse a)  (reverse b) )  )
+somaBN a b = reverse (ajustar (mySomaZip (reverse a)  (reverse b) )  )
 --trocar zipwith por outra funçao
 -- ver novaSoma [1,8,0] [9,8,1]
 ajustar :: BigNumber -> BigNumber
@@ -88,9 +45,8 @@ ajustar [x, y]
     |x >= 10 = x`mod`10:  ajustar [y+x`div`10]
     
 ajustar (x:xs) 
-    |x < 10 = x:xs
+    |x < 10 = x: ajustar xs
     |x >= 10 = x`mod`10: ajustar (head xs + x`div`10: tail xs)
-
 
 mySomaZip :: BigNumber -> BigNumber -> BigNumber
 mySomaZip [] [] = []
@@ -98,11 +54,12 @@ mySomaZip a  [] = a
 mySomaZip [] b  = b
 mySomaZip a b = head a + head b : mySomaZip (tail a) (tail b)
 
+
 --NOTA: posso colocar a guarda quando for para por aquele 0
 --quando algarismo mais singificativo é 10 da mal
 --abs(x1+y1)`div`10 :
 --n funciona para negativos
-
+{-
 subBN :: BigNumber -> BigNumber -> BigNumber
 subBN x y = reverse (sub (reverse x) (reverse y))
 
@@ -117,8 +74,14 @@ sub [x0, x1] [y]
 sub [x0, x1] [y0, y1]
     |x0 - y0 > 0 = [abs(x0 - y0)`mod`10, abs(x1 - y1)`mod`10]
     |x0 - y0 < 0 = [10 - abs(x0 - y0)`mod`10, x1 - (y1 + abs(10-x0 + y0)`div`10)]
-sub (x0:x1:xs) (y0:y1:ys) = abs((x0 - y0)`mod`10): (x1 - (y1 + (abs(x0+y0)`div`10)) )`mod`10: sub xs ys
---sub (x:xs) (y:ys)   = abs((x - y)`mod`10): (head xs - (head ys + (abs(x+y)`div`10)) )`mod`10: sub xs ys
+sub (x:xs) (y:ys)   = abs((x - y)`mod`10): (head xs - (head ys + (abs(x+y)`div`10)) )`mod`10: sub (tail xs) (tail ys)
+--sub (x0:x1:xs) (y0:y1:ys) = abs((x0 - y0)`mod`10): (x1 - (y1 + (abs(x0+y0)`div`10)) )`mod`10: sub xs ys
+-}
+
+subBN :: BigNumber -> BigNumber -> BigNumber
+subBN a b = reverse (ajustar (mySomaZip (reverse a)  (reverse b) )  )
+
+
 
 --faltam patterns nestas ultimas duas, ex [1] [1] ou [1,2,3] [1,1,1]
 
