@@ -175,7 +175,7 @@ divBN a b = (quocient , remainder)
 -}
 
 divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
-divBN a b = (c, subBN a (mulBN b c ))
+divBN a b = (c, subBN a (mulBN c b ) )
     where c = divAux a b [0]
 
 {-
@@ -193,6 +193,7 @@ divAux a b i
 
 
 largerThan :: BigNumber -> BigNumber -> Bool
+largerThan [] [] = True
 largerThan (x:xs) (y:ys)
     |length (x:xs) > length (y:ys) =   True
     |length xs == length ys && x > y = True
