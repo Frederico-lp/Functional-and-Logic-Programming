@@ -88,7 +88,7 @@ O desenvolvimento das funções da alínea 2 (dois) tiveram por base estratégia
 4)?????????????????
 Int: A partir do argumento 95 (inclusive) passa a existir e o resultado é negativo
 
-Integer: Não aparenta existir limite sendo que todos os numeros que involvem uma espera razoavel de tempo de calculo são positivos
+Integer: Não aparenta existir limite sendo que todos os numeros que involvem uma espera razoavel de tempo de calculo são positivos.
 
 BigNumber: Não é possivel existir overflow devido a implementação em listas do BigNumber.
 

@@ -1,15 +1,17 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-module BigNumber (BigNumber,
-                    scanner, algarismos, somaBN, subBN) where
+-- Módulos a serem importados para o funcionamento correto do programa
+module BigNumber (BigNumber, scanner, algarismos, somaBN, subBN) where
 import Data.Text.Internal.Read (digitToInt)
 import Text.Printf (IsChar(toChar))
 import Data.Time.Format.ISO8601 (yearFormat)
 
 type BigNumber = [Int]
 
+-- Implementação da função scanner
 scanner:: String -> BigNumber
 scanner n = algarismos (read n::Int)
 
+-- Funções auxiliares à função scanner (começo)
 algarismos :: Int -> [Int]
 algarismos x
     |x > 0 = reverse (algarismosrev x)
@@ -23,26 +25,30 @@ algarismosrev x
     |x < 0 =  negate x`mod`10 : algarismosrev (negate x`div`10)
     |x == 0 = []
     |otherwise = [-1]
+-- Funções auxiliares à função scanner (fim)
 
+
+
+-- Implementação da função output
 output :: BigNumber -> String
 output = concatMap show
 
+
+
+-- Implementação da função somaBN
 somaBN :: BigNumber -> BigNumber -> BigNumber
 somaBN a b = reverse (ajustar (mySomaZip (reverse a)  (reverse b) )  )
---trocar zipwith por outra funçao
--- ver novaSoma [1,8,0] [9,8,1]
+
+-- Funções auxiliares à função somaBN (começo)
 ajustar :: BigNumber -> BigNumber
 ajustar []  = []
-
 ajustar [x]
     |x < 10  =  [x]
     |x >= 10  =  [x`mod`10, x`div`10]
---    |x == 0 = [0, 1]
 ajustar [x, y]
     |x < 10 && y >= 10 = x`mod`10: ajustar [y]
     |x < 10 && y < 10 = [x,y]
     |x >= 10 = x`mod`10:  ajustar [y+x`div`10]
-
 ajustar (x:xs)
     |x < 10 = x: ajustar xs
     |x >= 10 = x`mod`10: ajustar (head xs + x`div`10: tail xs)
@@ -52,20 +58,19 @@ mySomaZip [] [] = []
 mySomaZip a  [] = a
 mySomaZip [] b  = b
 mySomaZip a b = head a + head b : mySomaZip (tail a) (tail b)
+-- Funções auxiliares à função somaBN (fim)
 
 
 
+-- Implementação da função subBN
 subBN :: BigNumber -> BigNumber -> BigNumber
 subBN a b = reverse (ajustar (mySomaZip (reverse a)  (reverse b) )  )
 
 
 
---faltam patterns nestas ultimas duas, ex [1] [1] ou [1,2,3] [1,1,1]
-
--- Começo da implementação da função simpleMul.
+-- Funções auxiliares à função mulBN (começo)
 simpleMul :: Int -> Int -> Int
-simpleMul x y = x * y                               -- Multiplicação simples de dois números inteiros.
--- Fim da implementação da função simpleMul.
+simpleMul x y = x * y                               
 
 checkNegSolo :: Int -> Bool
 checkNegSolo x = x < 0
@@ -103,8 +108,9 @@ indexAt (bn_list:bn_list_xs) i = addNzeros i bn_list : indexAt bn_list_xs (i+1)
 somaRec :: [BigNumber] -> BigNumber
 somaRec [] = [0]
 somaRec (bn:bns) = somaBN bn (somaRec bns)
+-- Funções auxiliares à função mulBN (fim)
 
--- Começo da implementação da função mulBN.
+-- Implementação da função mulBN
 mulBN :: BigNumber -> BigNumber -> BigNumber
 mulBN x y = final_ret
     where
@@ -123,37 +129,18 @@ mulBN x y = final_ret
                         then changeNeg (somaRec list_with_zeros)
                         else somaRec list_with_zeros
                         
--- Fim da implementação da função mulBN.
 
 
--- Começo da implementação da função simpleDiv.
-simpleDiv :: Int -> Int -> Int
-simpleDiv x y = x `div` y                           -- Divisão inteira simples de dois números inteiros.
--- Fim da implementação da função simpleDiv.
-
--- Começo da implementação da função simpleRem.
-simpleRem :: Int -> Int -> Int
-simpleRem x y = x `rem` y                           -- Resto inteiro simples de dois números inteiros
--- Fim da implementação da função simpleRem.
-
-
+-- Implementação da função divBN
 divBN :: BigNumber -> BigNumber -> (BigNumber, BigNumber)
 divBN a b = (c, subBN a (mulBN c b ) )
     where c = divAux a b [0]
 
-{-
---quociente
-dixAux :: BigNumber -> BigNumber -> Int
-divAux a b = if subBN(a b) != [0] 
-                then divBN (subBN (a b) b)
-            else [a]
--}
-
+-- Funções auxiliares à função divBN (começo)
 divAux :: BigNumber -> BigNumber -> BigNumber -> BigNumber
 divAux a b i
     |largerThan a b =  divAux (subBN a b) b (somaBN i [1])
     |otherwise = i
-
 
 largerThan :: BigNumber -> BigNumber -> Bool
 largerThan [] [] = True
@@ -162,12 +149,12 @@ largerThan (x:xs) (y:ys)
     |length xs == length ys && x > y = True
     |length xs == length ys && x == y = largerThan  xs ys
     |otherwise = False
+-- Funções auxiliares à função divBN (fim)
 
 
 
+-- Implementação da função safeDivBN
 safeDivBN :: BigNumber -> BigNumber -> Maybe (BigNumber, BigNumber)
 safeDivBN x [0] = Nothing
 safeDivBN x y = Just (divBN x y)
-
-
 
