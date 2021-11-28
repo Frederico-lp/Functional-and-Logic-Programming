@@ -16,7 +16,7 @@ fibLista n = fib !! fromIntegral n
 
 
 -- Implementação da função fibListaInfinita
-fibListaInfinita :: Integer -> Integer
+fibListaInfinita :: (Integral a) => a -> a
 fibListaInfinita i =  fib!!fromIntegral i
     where fib = 0: 1: zipWith (+) fib (tail fib)
 

@@ -64,7 +64,33 @@ mySomaZip a b = head a + head b : mySomaZip (tail a) (tail b)
 
 -- Implementação da função subBN
 subBN :: BigNumber -> BigNumber -> BigNumber
-subBN a b = reverse (ajustar (mySomaZip (reverse a)  (reverse b) )  )
+subBN a b = reverse (ajustarSub (mySubZip (reverse a)  (reverse b) )  )
+
+-- Funções auxiliares à função mulBN (começo)
+ajustarSub :: BigNumber -> BigNumber
+ajustarSub []  = []
+
+ajustarSub [x]
+    |x > 0 = [x]
+    |x < 0 = [x+1]
+
+ajustarSub [x, y]
+    |x >= 0 && y == 0 = [x]
+    |x >= 0 = x: ajustar [y]
+    |x < 0 && y == 0 = [x]
+    |x < 0 && y - 1 == 0 = [10 - abs x]
+    |x < 0 && y - 1 < 0 = 10 - abs x: ajustar [y-1]
+
+ajustarSub (x:xs)
+    |x <  0 = 10 - abs x :ajustarSub (head xs - 1 : tail xs)
+    |x >= 0 = x : ajustarSub xs
+
+mySubZip :: BigNumber -> BigNumber -> BigNumber
+mySubZip [] [] = []
+mySubZip a  [] = a
+mySubZip [] b  = b
+mySubZip a b = head a - head b : mySubZip (tail a) (tail b)
+-- Funções auxiliares à função subBN (fim)
 
 
 
