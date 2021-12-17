@@ -70,3 +70,14 @@ grandfather(X, Y):- father(X, Z), parent(Z, Y).
 siblings(X, Y) :- father(Z, X), father(Z,Y), mother(A,X), mother(A,Y).
 halfSiblings(Q,P):- ( father(X,Q),father(X,P);mother(Y,Q),mother(Y,P) ), \+ siblings(Q,P).
 
+%ficha 2
+ancestor(X, Y) :- parent(X,Y).
+ancestor(X, Y) :- 
+                parent(X,A),
+                ancestor(A,Y).
+    
+descendant(X, Y):- parent(Y,X). %x é descendant se y for pai
+descendant(X, Y):- 
+                parent(Y,Z),    %x é descendant se y for pai de Z
+                descendant(X,Z).    % e z pai de X
+
