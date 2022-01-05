@@ -17,7 +17,7 @@ start_game(_):-
 % game_loop(_,_,_,1) :-
 %     write("Black player won!").
 game_loop(Board, Player, WhiteWon, BlackWon) :-
-    printBoard(Board),
+    write_board(Board),
     get_move(Board, NewBoard),
     (Player = b -> game_loop(NewBoard, Player, 0 ,0);
     Player = w -> game_loop(NewBoard, Player, 0,0)).
