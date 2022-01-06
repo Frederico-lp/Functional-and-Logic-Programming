@@ -22,7 +22,7 @@ move(Board, Column, Row, FinalColumn, FinalRow, NewBoard) :-
         (Column =:= FinalColumn -> 
             diagonalMove(Board, Column, Row, FinalColumn, FinalRow, NewBoard);
                 horizontalMove(Board, Row, Column, FinalColumn, NewBoard));
-                    verticalMove(Board, Column, Row, FinalRow, NewBoard)).
+                    verticalMove(Board, Column, Row, FinalRow, NewBoard, 0)).
     %nth0(Row, Board, ColumnList),
     
 
@@ -35,18 +35,35 @@ diagonalMove(Board, Column, Row, FinalColumn, FinalRow, NewBoard) :-
     write('diagonal\n').
 
 horizontalMove(Board, Row, Column, FinalColumn, NewBoard) :-
-    nth0(Row, Board, ColumnList),
-    insert(vazio, ColumnList, Column, NewColumnList),
+    nth0(Row, Board, RowList),
+    insert(vazio, RowList, Column, NewRowList),
     %replace the old row with the new one
-    replace(Board, Row, NewColumnList, NewBoard),
+    replace(Board, Row, NewRowList, NewBoard),
     write('horizontal\n').
 
-verticalMove(Board, Column, Row, FinalRow, NewBoard) :-
-    nth0(Column, Board, RowList),
-    insert(vazio, RowList, Row, NewRowList),
-    %replace the old column with the new one
-    replace(Board, Column, NewRowList, NewBoard),
-    write('vertical\n').
+%for the last row
+verticalMove(Board, Column, Row, FinalRow, NewBoard, NumberColumns) :-
+
+verticalMove(Board, Column, Row, FinalRow, NewBoard, 0) :-
+    %get the row where is the initial piece
+    nth0(Row, Board, RowList),
+
+    %get the piece, will be usefull for next iteration
+    nth0(Column, RowList, FirstElement)
+
+    %replace the piece
+    replace(RowList, Column, vazio, NewRowList),
+    replace(Board, Row, NewRowList, NewBoard),
+
+    %check if it's the last row
+    % (last(RowList, Board) -> verticalMove(Board, Column, Row, FinalRow, NewBoard, 0))
+    % verticalMove(Board, Column, Row, FinalRow, NewBoard, 0).
+
+
+%mover na vertical:
+% adicionar empty na posiçao antiga
+% dar "shift" de tudo com um ciclo
+
 
 
 % lista inicial, indice, elemento, lista depois
@@ -63,3 +80,7 @@ insert(El, L, 0, [El | L]).
 insert(El, [G | R], P, [G | Res]):-
 	P1 is P - 1,
 	insert(El, R, P1, Res).
+
+% check if it's the last element of list
+last(X,[X]).
+last(X,[_|Z]) :- last(X,Z).
