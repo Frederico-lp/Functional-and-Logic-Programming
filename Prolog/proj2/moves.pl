@@ -37,13 +37,15 @@ diagonalMove(Board, Column, Row, FinalColumn, FinalRow, NewBoard) :-
 horizontalMove(Board, Row, Column, FinalColumn, NewBoard) :-
     nth0(Row, Board, ColumnList),
     insert(vazio, ColumnList, Column, NewColumnList),
-    %replace
+    %replace the old row with the new one
+    replace(Board, Row, NewColumnList, NewBoard),
     write('horizontal\n').
 
 verticalMove(Board, Column, Row, FinalRow, NewBoard) :-
     nth0(Column, Board, RowList),
     insert(vazio, RowList, Row, NewRowList),
-    %replace
+    %replace the old column with the new one
+    replace(Board, Column, NewRowList, NewBoard),
     write('vertical\n').
 
 
