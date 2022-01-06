@@ -19,6 +19,7 @@ start_game(_):-
 game_loop(Board, Player, WhiteWon, BlackWon) :-
     write_board(Board),
     get_move(Board, NewBoard),
+    write_board(NewBoard),  %so para teste
     (Player = b -> game_loop(NewBoard, Player, 0 ,0);
     Player = w -> game_loop(NewBoard, Player, 0,0)).
 % display Board

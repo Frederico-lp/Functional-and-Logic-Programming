@@ -5,6 +5,8 @@ write_char(w) :- write('W ').
 write_char(b) :- write('B ').
 write_char(wk) :- write('WK').
 write_char(bk) :- write('BK').
+write_char(empty) :- write ('NN').
+write_char(vazio) :- write ('NN').
 
 % Top Number Row (Numbers correspond to the correspondent ASCII decimal value)
 write_char(48) :- write('0 ').
