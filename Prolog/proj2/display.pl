@@ -19,7 +19,11 @@ write_char(54) :- write('6 ').
 write_char(55) :- write('7 ').
 write_char(56) :- write('8 ').
 write_char(57) :- write('9 ').
-write_char(58) :- write('X ').
+write_char(58) :- write('10').
+write_char(59) :- write('11').
+write_char(60) :- write('12').
+
+index_line([clear,48,49,50,51,52,53,54,55,56,57,58,59]).
 
 % ---------------------------------------------------------------
 
@@ -45,7 +49,8 @@ write_board(Board) :-
 write_board([], _).
 write_board(Board, 0) :-
     write('| '),
-    length(Board, Length), get_top_number_row(Length + 1, Indexes),
+    %length(Board, Length), get_top_number_row(13, Indexes),
+    index_line(Indexes),
     write_line(Indexes, 0), nl,
     write_board(Board, 1).
 write_board([Head|Tail], CurrLine) :-
@@ -53,17 +58,19 @@ write_board([Head|Tail], CurrLine) :-
     write_line(Head, CurrLine), nl,
     write_board(Tail, CurrLine + 1).
 
-% Returns top number row with given length
-get_top_number_row(N, L):-
-    N > 0, N =< 12,
-    trim([clear,48,49,50,51,52,53,54,55,56,57,58], N, L).
 
-% Trim List L to length N
-trim(L,N,S) :-
-    length(L,X),
-    (
-        N =< X -> PL is X - N,
-        length(P,PL), 
-        append(S,P,L);
-        append([], L, S)
-    ).
+
+% % Returns top number row with given length
+% get_top_number_row(N, L):-
+%     N > 0, N =< 12,
+%     trim([clear,48,49,50,51,52,53,54,55,56,57,58], N, L).
+
+% % Trim List L to length N
+% trim(L,N,S) :-
+%     length(L,X),
+%     (
+%         N =< X -> PL is X - N,
+%         length(P,PL), 
+%         append(S,P,L);
+%         append([], L, S)
+%     ).

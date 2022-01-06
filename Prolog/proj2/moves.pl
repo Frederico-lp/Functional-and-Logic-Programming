@@ -17,52 +17,48 @@ get_move(Board, NewBoard) :-
 
 
 move(Board, Column, Row, FinalColumn, FinalRow, NewBoard) :-
+    %falta aqui dois nth0 para ver se o local de destino esta 'clear'
     %determine diretion of movement
     (Row =:= FinalRow -> 
         (Column =:= FinalColumn -> 
             diagonalMove(Board, Column, Row, FinalColumn, FinalRow, NewBoard);
                 horizontalMove(Board, Row, Column, FinalColumn, NewBoard));
-                    verticalMove(Board, Column, Row, FinalRow, NewBoard, 0)).
-    %nth0(Row, Board, ColumnList),
-    
+                    verticalMove(Board, Column, Row, FinalRow, NewBoard)).    
 
 
-% nth0(?Index, ?List, ?Elem)
 
-%este ainda n funciona na coisa antes
 diagonalMove(Board, Column, Row, FinalColumn, FinalRow, NewBoard) :-
-    nth0(Column, Board, RowList),
-    write('diagonal\n').
+    write('diagonal\n'),
+    write('Invalid Move!\n').
 
 horizontalMove(Board, Row, Column, FinalColumn, NewBoard) :-
     nth0(Row, Board, RowList),
-    insert(vazio, RowList, Column, NewRowList),
+    %get element to move
+    nth0(Column, RowList, Element),
+    %clear old position
+    replace(RowList, Column, clear, NewRowList),
+    %put piece in new position
+    replace(NewRowList, FinalColumn, Element, FinalRowList),
     %replace the old row with the new one
-    replace(Board, Row, NewRowList, NewBoard),
+    replace(Board, Row, FinalRowList, NewBoard),
     write('horizontal\n').
 
-%for the last row
-verticalMove(Board, Column, Row, FinalRow, NewBoard, NumberColumns) :-
 
-verticalMove(Board, Column, Row, FinalRow, NewBoard, 0) :-
-    %get the row where is the initial piece
+verticalMove(Board, Column, Row, FinalRow, NewBoard) :-
     nth0(Row, Board, RowList),
+    %get element to move
+    nth0(Column, RowList, Element),
 
-    %get the piece, will be usefull for next iteration
-    nth0(Column, RowList, FirstElement)
+    %clear old position
+    replace(RowList, Column, clear, NewRowList),
+    replace(Board, Row, NewRowList, IntermediateBoard),
 
-    %replace the piece
-    replace(RowList, Column, vazio, NewRowList),
-    replace(Board, Row, NewRowList, NewBoard),
-
-    %check if it's the last row
-    % (last(RowList, Board) -> verticalMove(Board, Column, Row, FinalRow, NewBoard, 0))
-    % verticalMove(Board, Column, Row, FinalRow, NewBoard, 0).
-
-
-%mover na vertical:
-% adicionar empty na posiçao antiga
-% dar "shift" de tudo com um ciclo
+    %put piece in new position
+    nth0(FinalRow, Board, FinalRowList),
+    replace(FinalRowList, Column, Element, NewFinalRowList),
+    %replace the old row with the new one
+    replace(IntermediateBoard, FinalRow, NewFinalRowList, NewBoard),
+    write('vertical\n').
 
 
 
@@ -81,6 +77,6 @@ insert(El, [G | R], P, [G | Res]):-
 	P1 is P - 1,
 	insert(El, R, P1, Res).
 
-% check if it's the last element of list
-last(X,[X]).
-last(X,[_|Z]) :- last(X,Z).
+% % check if it's the last element of list
+% last'(X,[X]).
+% last'(X,[_|Z]) :- last(X,Z).
