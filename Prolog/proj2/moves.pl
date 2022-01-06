@@ -16,6 +16,7 @@ get_move(Board, NewBoard) :-
     move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
 
 
+%NOTA: usar halt. para terminar execuçao de programa
 move(Board, Column, Row, FinalColumn, FinalRow, NewBoard) :-
     %falta aqui dois nth0 para ver se o local de destino esta 'clear'
     %determine diretion of movement
