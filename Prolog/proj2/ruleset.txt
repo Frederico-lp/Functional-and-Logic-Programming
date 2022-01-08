@@ -1,0 +1,22 @@
+TO-DO:
+
+-> choosePlayer() - needs to be random (CHECK)
+-> changeTurn() -  switch player number
+-> checkMove() - if no 2 or more pieces are in the same place
+               - if no move can be done, player loses
+               - moves horizontally or vertically
+               - cant jump over another piece
+               - cant change directions during move
+               
+-> capture() - move a piece horizontally or vertically adjacent to opponent's piece
+             - captured piece must be in a "sandwich" between own pieces
+             - more than one stone can be captured simultaneously in the previous manner if the rules above still apply
+                ex: Friend Enemy Friend Enemy Friend -> 2 Enemy pieces captured
+            
+- a piece is free to move between two of an opponent's pieces without being captured
+- capture is not mandatory unless stated
+
+-> removePiece() - capture pieces are removed from the board
+-> incrementScore() - adds one (1) to the player's score who captured a piece
+
+- playing not to win == player loses
