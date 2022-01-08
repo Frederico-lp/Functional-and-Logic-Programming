@@ -1,4 +1,4 @@
 Before playing:
 
--> Call choosePlayer(1,3,X) to check wich player goes first (X = 1 or X = 2).
+-> Call choosePlayer(1,3,X) to check wich player goes first (X = 1 or X = 2 is equal to Player 1 or Player 2).
 

@@ -18,3 +18,33 @@ changeTurn(CurrentPlayer, NextPlayer) :-
 % ( condition -> then_clause ; else_clause )
 
 % ---------------------------------------------------------------
+
+% Working
+
+checkHorizontalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
+    (
+        Column \= FinalColumn
+    ->  (
+            Row =:= FinalRow
+        -> ReturnBooleanValue = 'True'
+        ; ReturnBooleanValue = 'False'
+        )
+    ;   ReturnBooleanValue = 'False'
+    ).
+
+% ---------------------------------------------------------------
+
+% Working
+
+checkVerticalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
+    (
+        Row \= FinalRow
+    ->  (
+            Column =:= FinalColumn
+        -> ReturnBooleanValue = 'True'
+        ; ReturnBooleanValue = 'False'
+        )
+    ;   ReturnBooleanValue = 'False'
+    ).
+
+% ---------------------------------------------------------------
