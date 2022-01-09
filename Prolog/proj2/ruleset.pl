@@ -70,8 +70,15 @@ checkInputColumn(IsValid):-
     (
        memberchk(Number,[0,1,2,3,4,5,6,7,8,9,10,11])
     -> IsValid = 'True', !, true
-    ; write('Invalid Column\n'), IsValid = 'False', fail
+    ; write('Invalid Column'), nl, IsValid = 'False', fail
     ).
+
+% ---------------------------------------------------------------
+
+% Working
+
+getRow(Board, RowNumber, ReturningRow) :-
+    nth0(RowNumber, Board, ReturningRow).
 
 % ---------------------------------------------------------------
 
