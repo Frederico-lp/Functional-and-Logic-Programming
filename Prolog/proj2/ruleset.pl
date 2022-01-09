@@ -82,3 +82,25 @@ getRow(Board, RowNumber, ReturningRow) :-
 
 % ---------------------------------------------------------------
 
+% Working
+
+accCp([],[]).
+accCp([H|T1],[H|T2]) :- accCp(T1,T2).
+copy(L,R) :- accCp(L,R).
+
+loop(Board, Rows, ColumnNumber, EL, ReturningColumn, FinalColumn) :- 
+           nth0(Rows, Board, ReturningRow),
+           nth0(ColumnNumber, ReturningRow, ReturnColumnElement),
+           append(EL, [ReturnColumnElement], Column),
+           C_Test = Column,
+           S is Rows+1, 
+           (
+               S == 8
+            -> copy(Column, FinalColumn), !
+            ;  loop(Board, S, ColumnNumber, Column, C_Test, FinalColumn)
+           ).
+
+getColumn(Board, ColumnNumber, FinalColumn) :-
+    loop(Board, 0, ColumnNumber, [], ReturningColumn, FinalColumn).
+
+% ---------------------------------------------------------------
