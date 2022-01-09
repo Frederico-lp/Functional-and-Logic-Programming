@@ -72,5 +72,6 @@ checkInputColumn(IsValid):-
     -> IsValid = 'True', !, true
     ; write('Invalid Column\n'), IsValid = 'False', fail
     ).
-    
+
 % ---------------------------------------------------------------
+
