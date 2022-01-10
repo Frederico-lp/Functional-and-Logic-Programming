@@ -1,7 +1,7 @@
 TO-DO:
 
 -> choosePlayer() - needs to be random (CHECK)
--> changeTurn() -  switch player number
+-> changeTurn() -  switch player number (CHECK)
 -> checkMove() - if no 2 or more pieces are in the same place
                - if no move can be done, player loses
                - moves horizontally or vertically

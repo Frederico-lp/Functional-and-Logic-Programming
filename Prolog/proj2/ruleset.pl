@@ -104,3 +104,17 @@ getColumn(Board, ColumnNumber, FinalColumn) :-
     loop(Board, 0, ColumnNumber, [], ReturningColumn, FinalColumn).
 
 % ---------------------------------------------------------------
+
+% Working 
+
+checkPieceOnDestination(RowOrColumn, Destination, ReturnBooleanValue) :-
+    nth0(Destination, RowOrColumn, Piece),
+    (
+        Piece == clear
+
+    ->  ReturnBooleanValue = 'True', !, true
+
+    ; ReturnBooleanValue = 'False', !, false, fail
+    ).
+    
+% ---------------------------------------------------------------
