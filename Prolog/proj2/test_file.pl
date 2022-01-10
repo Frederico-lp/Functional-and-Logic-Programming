@@ -22,14 +22,28 @@ checkLegalMove(_, OriginColumn, OriginRow, DestinationColumn, DestinationRow, Re
     (
         checkHorizontalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow)
 
-    ->  
+    ->  getRow(Board, OriginRow, ReturningRow),
+        (
+            checkPieceOnDestination(ReturningRow, DestinationColumn)
+
+        ->  ReturnBooleanValue = 'False', !, false, fail
+
+        ;   %check between
+        )
 
     ;   (
             checkVerticalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow)
 
-        ->
+        ->  getColumn(Board, OriginColumn, FinalColumn),
+            (
+                checkPieceOnDestination(FinalColumn, DestinationRow)
 
-        ;   ReturnBooleanValue = 'False'
+            ->  ReturnBooleanValue = 'False', !, false, fail
+
+            ; %check between
+            )
+
+        ;   ReturnBooleanValue = 'False', !, false, fail
         )
     ).
 */
