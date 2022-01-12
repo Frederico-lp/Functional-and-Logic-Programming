@@ -2,15 +2,23 @@
 :- use_module(library(random)).
 :- consult('ruleset.pl').
 
-get_move(Board, NewBoard) :-
-    write('Your turn to play\n'),
+starting_pos(Board, ValidColumn, ValidRow) :-
     write('Choose a piece to move\n'),
     write('Column\n'),
-    %read(Column),
     checkInputColumn(IsValidC, Column),
     write('Row\n'),
-    %read(Row),
     checkInputRow(IsValidR, Row),
+
+    nth0(Row, Board, RowList),
+    nth0(Column, RowList, Element),
+    (Element == w 
+        ->ValidRow = Row, ValidColumn = Column, !, true
+        ; write('Invalid, that is not a white piece!\n'), starting_pos(Board, ValidColumn, ValidRow)
+    ).
+
+
+get_move(Board, NewBoard) :-
+    starting_pos(Board, Column, Row),
     write('Choose where to move it\n'),
     write('Column\n'),
     checkInputColumn(IsValidC, FinalColumn),
