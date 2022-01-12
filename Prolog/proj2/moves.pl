@@ -79,13 +79,13 @@ verticalMove(Board, Column, Row, FinalRow, NewBoard) :-
 
 
 
-% lista inicial, indice, elemento, lista depois
-replace([_|T], 0, X, [X|T]).
-replace([H|T], I, X, [H|R]):- 
-    I > -1,
-    NI is I-1,
-    replace(T, NI, X, R), !.
-replace(L, _, _, L).
+% % lista inicial, indice, elemento, lista depois
+% replace([_|T], 0, X, [X|T]).
+% replace([H|T], I, X, [H|R]):- 
+%     I > -1,
+%     NI is I-1,
+%     replace(T, NI, X, R), !.
+% replace(L, _, _, L).
 
 
 % insert element at n-th position on list, 3º argument is new element position after insert
