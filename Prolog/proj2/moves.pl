@@ -1,4 +1,5 @@
 :- use_module(library(lists)).
+:- use_module(library(random)).
 :- consult('ruleset.pl').
 
 get_move(Board, NewBoard) :-
@@ -15,11 +16,12 @@ get_move(Board, NewBoard) :-
     checkInputColumn(IsValidC, FinalColumn),
     write('Row\n'),
     checkInputRow(IsValidR, FinalRow),
-    checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),
-    (ReturnBooleanValue
-    -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard); 
-    write('Invalid move!')
-    ).
+    %checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),
+    % (ReturnBooleanValue
+    % -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard); 
+    % write('Invalid move!')
+    % ).
+    move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
 
 
 %NOTA: usar halt. para terminar execuçao de programa
@@ -87,3 +89,60 @@ insert(El, [G | R], P, [G | Res]):-
 % % check if it's the last element of list
 % last'(X,[X]).
 % last'(X,[_|Z]) :- last(X,Z).
+
+
+ai_play(Board, NewBoard) :-
+    %findall(Move, checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow, Move), Moves),
+    black_pieces(Board, 0, 0, List, BlackList),
+    empty_places(Board, 0, 0, List1, ClearList),
+    %get initial position
+    random_member(Initial, BlackList),
+    nth0(0, Initial, Row),
+    nth0(1, Initial, Column),
+    %get final position
+    random_member(Final, ClearList),
+    nth0(0, Final, FinalRow),
+    nth0(1, Final, FinalColumn),
+    %check if move is valid 
+    %TO-DO
+    %move
+    move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
+    %random_member(X, Moves).
+
+%add element to the end of the list.
+% element, list, list after insert
+add_tail([],X,[X]).
+add_tail([H|T],X,[H|L]):-add_tail(T,X,L).
+
+%list of lists with black pieces and it's position
+black_pieces(_, 8, _, List, FinalList):- copy(List,FinalList).   %final row
+black_pieces(Board, Row, 12, List, FinalList):-
+    NewRow is Row+1,
+    black_pieces(Board, NewRow, 0, List, FinalList).    %next row
+black_pieces(Board, Row, Column, List, FinalList) :- %row and column starts at 0,0
+    nth0(Row, Board, RowList),
+    nth0(Column, RowList, Element),
+    (Element == b 
+        -> add_tail(List,[Row, Column], NewList), NewColumn is Column+1, black_pieces(Board, Row, NewColumn, NewList, FinalList)
+        ; NewColumn is Column+1, black_pieces(Board, Row, NewColumn, List, FinalList)
+    ).
+
+%list of lists with black pieces and it's position
+empty_places(_, 8, _, List, FinalList):- copy(List,FinalList).   %final row
+empty_places(Board, Row, 12, List, FinalList):-
+    NewRow is Row+1,
+    empty_places(Board, NewRow, 0, List, FinalList).    %next row
+empty_places(Board, Row, Column, List, FinalList) :- %row and column starts at 0,0
+    nth0(Row, Board, RowList),
+    nth0(Column, RowList, Element),
+    (Element == clear 
+        -> add_tail(List,[Row, Column], NewList), NewColumn is Column+1, empty_places(Board, Row, NewColumn, NewList, FinalList)
+        ; NewColumn is Column+1, empty_places(Board, Row, NewColumn, List, FinalList)
+    ).
+
+
+
+
+
+
+    
