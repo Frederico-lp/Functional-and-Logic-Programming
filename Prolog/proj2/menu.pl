@@ -34,7 +34,7 @@ print_game_menu:-
 print_ai_menu:-
     nl,
     print('================================================'), nl,
-    print('|                    GAME                      |'), nl,
+    print('|                  AI Level                    |'), nl,
     print('================================================'), nl,
     print('                                                '), nl,
     print('                1 - Level 1                     '), nl,

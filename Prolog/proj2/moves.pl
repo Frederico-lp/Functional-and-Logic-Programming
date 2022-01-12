@@ -1,19 +1,25 @@
 :- use_module(library(lists)).
+:- consult('ruleset.pl').
 
 get_move(Board, NewBoard) :-
     write('Your turn to play\n'),
     write('Choose a piece to move\n'),
     write('Column\n'),
-    read(Column),
+    %read(Column),
+    checkInputColumn(IsValidC, Column),
     write('Row\n'),
-    read(Row),
+    %read(Row),
+    checkInputRow(IsValidR, Row),
     write('Choose where to move it\n'),
     write('Column\n'),
-    read(FinalColumn),
+    checkInputColumn(IsValidC, FinalColumn),
     write('Row\n'),
-    read(FinalRow),
-    %FALTA: check for valid move
-    move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
+    checkInputRow(IsValidR, FinalRow),
+    checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),
+    (ReturnBooleanValue
+    -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard); 
+    write('Invalid move!')
+    ).
 
 
 %NOTA: usar halt. para terminar execuçao de programa

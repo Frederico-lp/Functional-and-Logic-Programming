@@ -51,12 +51,12 @@ checkVerticalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
 
 % Working
 
-checkInputRow(IsValid):-
+checkInputRow(IsValid, Row):-
     repeat,
     read(Number),
     (
        memberchk(Number,[0,1,2,3,4,5,6,7])
-    -> IsValid = 'True', !, true
+    -> IsValid = 'True', Row = Number, !, true
     ; write('Invalid Row\n'), IsValid = 'False', fail
     ).
 
@@ -64,12 +64,12 @@ checkInputRow(IsValid):-
 
 % Working
 
-checkInputColumn(IsValid):-
+checkInputColumn(IsValid, Column):-
     repeat,
     read(Number),
     (
        memberchk(Number,[0,1,2,3,4,5,6,7,8,9,10,11])
-    -> IsValid = 'True', !, true
+    -> IsValid = 'True',Column = Number, !, true
     ; write('Invalid Column'), nl, IsValid = 'False', fail
     ).
 
@@ -143,7 +143,7 @@ loopBetween(ListToIterate, StartingPos, DestPosition, CheckInFront, Ret) :-
                 RetElem == clear
             ->  Ret = 'True'
             ;   Ret = 'False', !, false, fail
-            )
+            ),
             loopBetween(ListToIterate, Counter, DestinationPosition, CheckInFront, Ret)
         )
 
@@ -161,7 +161,7 @@ loopBetween(ListToIterate, StartingPos, DestPosition, CheckInFront, Ret) :-
                 RetElem == clear
             ->  Ret = 'True'
             ;   Ret = 'False', !, false, fail
-            )
+            ),
             loopBetween(ListToIterate, Counter, DestinationPosition, CheckInFront, Ret)
         )
     ).
@@ -180,7 +180,7 @@ checkPieceBetween(ListToIterate, OriginalPosition, DestinationPosition, CheckInF
 
 checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow, ReturnBooleanValue) :-
     (
-        checkHorizontalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow)
+        checkHorizontalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow, RetHorizontal)
 
     ->  (
             DestinationRow > OriginRow
@@ -196,7 +196,7 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
         ;   (
                 checkPieceBetween(ReturningRow, OriginRow, DestinationColumn, CheckInFront, ReturnBooleanValue)
             ->  ReturnBooleanValue = 'True', !, true
-            ;   ReturnBooleanValue 0 'False', !, false, fail
+            ;   ReturnBooleanValue = 'False', !, false, fail
             )
         )
 
@@ -217,7 +217,7 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
             ;   (
                     checkPieceBetween(ReturningRow, OriginColumn, DestinationRow, CheckInFront, ReturnBooleanValue)
                 ->  ReturnBooleanValue = 'True', !, true
-                ;   ReturnBooleanValue 0 'False', !, false, fail
+                ;   ReturnBooleanValue = 'False', !, false, fail
                 )
             )
 
