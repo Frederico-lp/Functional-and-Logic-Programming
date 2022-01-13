@@ -1,5 +1,9 @@
 :- use_module(library(random)).
 
+:- consult('board.pl').
+:- consult('moves.pl').
+:- consult('display.pl').
+
 % Working 
 % PlayerOne is 1 and PlayerTwo is 3 (because the upperbound is not included in the interval)
 
@@ -57,7 +61,7 @@ checkInputRow(IsValid, Row):-
     (
        memberchk(Number,[0,1,2,3,4,5,6,7])
     -> IsValid = 'True', Row = Number, !, true
-    ; write('Invalid Row\n'), IsValid = 'False', fail
+    ; write('Invalid Row\n'), IsValid = 'False'
     ).
 
 % ---------------------------------------------------------------
@@ -70,7 +74,7 @@ checkInputColumn(IsValid, Column):-
     (
        memberchk(Number,[0,1,2,3,4,5,6,7,8,9,10,11])
     -> IsValid = 'True',Column = Number, !, true
-    ; write('Invalid Column'), nl, IsValid = 'False', fail
+    ; write('Invalid Column'), nl, IsValid = 'False'
     ).
 
 % ---------------------------------------------------------------
@@ -97,7 +101,7 @@ loopRows(Board, Rows, ColumnNumber, EL, ReturningColumn, FinalColumn) :-
            (
                S == 8
             -> copy(Column, FinalColumn), !
-            ;  loop(Board, S, ColumnNumber, Column, C_Test, FinalColumn)
+            ;  loopRows(Board, S, ColumnNumber, Column, C_Test, FinalColumn)
            ).
 
 getColumn(Board, ColumnNumber, FinalColumn) :-
@@ -112,124 +116,134 @@ checkPieceOnDestination(RowOrColumn, Destination, ReturnBooleanValue) :-
     (
         Piece == clear
 
-    ->  ReturnBooleanValue = 'True', !, true
+    ->  ReturnBooleanValue = 'True', !
 
-    ; ReturnBooleanValue = 'False', !, false, fail
+    ; ReturnBooleanValue = 'False', ! 
     ).
     
 % ---------------------------------------------------------------
 
-% NEEDS TESTING 
+% Working
 
 % If CheckInFront equals true it will check positions in front, otherwhise will check positions behind
 
-loopBetween(ListToIterate, StartingPos, DestPosition, CheckInFront, Ret) :-
+loopBetween(ListToIterate, StartingPos, DestinationPosition, CheckInFront, Ret) :-
     Counter is StartingPos,
     (
-        Front_Back                                                                      % se for posicao acima
+        CheckInFront == 'True'                                                                      % se for posicao acima
 
     ->  (
             Counter == DestinationPosition                                               % verifica se está na posicao de destino
             
-        ->  (
-                checkPieceOnDestination(ListToIterate, DestinationPosition, ReturnBooleanValue)
-            ->  Ret = 'False', !, false, fail
-            ;   Ret = 'True', !, true
+        ->  checkPieceOnDestination(ListToIterate, DestinationPosition, ReturnBooleanValue),
+            (
+                ReturnBooleanValue == 'True'
+            ->  RetInside = 'False', !
+            ;   RetInside = 'True', !
             )
 
-        ;   Counter is StartingPos+1,                                                      % incrementar a posicao por um - verificar se se pode redifinir Counter
-            nth0(Counter, ListToIterate, RetElem),                                           % vai buscar o elemento do contador 
+        ;   Counter_Two is StartingPos+1,                                                      % incrementar a posicao por um - verificar se se pode redifinir Counter
+            nth0(Counter_Two, ListToIterate, RetElem),                                           % vai buscar o elemento do contador 
             (
                 RetElem == clear
-            ->  Ret = 'True'
-            ;   Ret = 'False', !, false, fail
+            ->  RetInside = 'True', !
+            ;   RetInside = 'False', !
             ),
-            loopBetween(ListToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+            loopBetween(ListToIterate, Counter_Two, DestinationPosition, CheckInFront, RetInside)
         )
 
     ;   (
             Counter == DestinationPosition
             
-        ->  (
-                checkPieceOnDestination(ListToIterate, DestinationPosition, ReturnBooleanValue)
-            ->  Ret = 'False', !, false, fail
-            ;   Ret = 'True', !, true
+        ->  checkPieceOnDestination(ListToIterate, DestinationPosition, ReturnBooleanValue),
+            (
+                ReturnBooleanValue == 'True'
+            ->  RetInside = 'False', !
+            ;   RetInside = 'True', !
             )
-        ;   Counter is StartingPos-1,
-            nth0(Counter, ListToIterate, RetElem),                                           % vai buscar o elemento do contador 
+        ;   Counter_Two is StartingPos-1,
+            nth0(Counter_Two, ListToIterate, RetElem),                                           % vai buscar o elemento do contador 
             (
                 RetElem == clear
-            ->  Ret = 'True'
-            ;   Ret = 'False', !, false, fail
+            ->  RetInside = 'True', !
+            ;   RetInside = 'False', !
             ),
-            loopBetween(ListToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+            loopBetween(ListToIterate, Counter_Two, DestinationPosition, CheckInFront, RetInside)
         )
     ).
 
 checkPieceBetween(ListToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnBooleanValue) :-
     loopBetween(ListToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnValue),
     (
-        ReturnValue = 'True' % n há peças entre
-    ->  ReturnBooleanValue = 'True', !, true
-    ; ReturnBooleanValue = 'False', !, false, fail
+        ReturnValue = 'True'
+    ->  ReturnBooleanValue = 'True', !
+    ; ReturnBooleanValue = 'False', !
     ).
 
 % ---------------------------------------------------------------
 
-% NEEDS TESTING
+% Working
 
-checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow, ReturnBooleanValue) :-
+checkLegalMove(_, OriginColumn, OriginRow, DestinationColumn, DestinationRow, ReturnBooleanValue) :-
+    starting_board(Board),
+    checkHorizontalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow, RetHorizontal),
     (
-        checkHorizontalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow, RetHorizontal)
-
+        RetHorizontal == 'True'
     ->  (
-            DestinationRow > OriginRow
-        ->  CheckInFront = true
-        ;   CheckInFront = false
+            DestinationColumn > OriginColumn
+        ->  CheckInFront = 'True'
+        ;   CheckInFront = 'False'
         ),
         getRow(Board, OriginRow, ReturningRow),
+        checkPieceOnDestination(ReturningRow, DestinationColumn, RetDestinaton),
         (
-            checkPieceOnDestination(ReturningRow, DestinationColumn)
+            RetDestinaton == 'True'
 
-        ->  ReturnBooleanValue = 'False', !, false, fail
+        ->  ReturnBooleanValue = 'False', !
 
-        ;   (
-                checkPieceBetween(ReturningRow, OriginRow, DestinationColumn, CheckInFront, ReturnBooleanValue)
-            ->  ReturnBooleanValue = 'True', !, true
-            ;   ReturnBooleanValue = 'False', !, false, fail
+        ;   checkPieceBetween(ReturningRow, OriginRow, DestinationColumn, CheckInFront, ReturnPB),
+            (
+                ReturnPB == 'True'
+            ->  ReturnBooleanValue = 'True', !
+            ;   ReturnBooleanValue = 'False', !
             )
         )
 
-    ;   (
-            checkVerticalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow)
+    ;   checkVerticalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow, RetVertical),
+    
+        (
+            RetVertical == 'True'
 
         ->  (
-                DestinationColumn > OriginColumn
-            ->  CheckInFront = true
-            ;   CheckInFront = false
+                DestinationRow > OriginRow
+            ->  CheckInFront = 'True'
+            ;   CheckInFront = 'False'
             ),
-            getColumn(Board, OriginColumn, FinalColumn),
+            getColumn(Board, OriginColumn, ReturningColumn),
+            checkPieceOnDestination(ReturningColumn, DestinationRow, RetDestinaton),
             (
-                checkPieceOnDestination(FinalColumn, DestinationRow)
+                RetDestinaton == 'True'
+            ->  ReturnBooleanValue = 'False', !
 
-            ->  ReturnBooleanValue = 'False', !, false, fail
-
-            ;   (
-                    checkPieceBetween(ReturningRow, OriginColumn, DestinationRow, CheckInFront, ReturnBooleanValue)
-                ->  ReturnBooleanValue = 'True', !, true
-                ;   ReturnBooleanValue = 'False', !, false, fail
+            ;   checkPieceBetween(ReturningColumn, OriginColumn, DestinationRow, CheckInFront, ReturnPB),
+                (
+                    ReturnPB == 'True'
+                ->  ReturnBooleanValue = 'True', !
+                ;   ReturnBooleanValue = 'False', !
                 )
             )
 
-        ;   ReturnBooleanValue = 'False', !, false, fail
+        ;   ReturnBooleanValue = 'False', !
         )
     ).
 
+% consult('/Users/pjpacheco/Desktop/FEUP/3Ano/PFL/project/PFL/Prolog/proj2/ruleset.pl'). %cccv
+% checkLegalMove(X, 0,0, 0,7,R).
 
 
+% ---------------------------------------------------------------
 
-
-
+/*
 
 check_captures(Board, BCapture, WCapture) :-
     check_horizontal_captures(Board, 0, BCapture, WCapture),
@@ -310,3 +324,4 @@ replace([H|T], I, X, [H|R]):-
 replace(L, _, _, L).
 
 
+*/
