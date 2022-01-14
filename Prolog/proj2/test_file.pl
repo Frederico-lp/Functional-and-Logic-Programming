@@ -17,3 +17,72 @@ para verificar se o movimento é legal:
 */
 
 
+list_length(Xs, L) :- list_length(Xs, 0, L).
+list_length([], L, L).
+list_length([_|Xs], T, L) :-
+  T1 is T+1,
+  list_length(Xs, T1, L).
+
+loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnValue) :-
+    list_length(RowOrColumnToIterate, Len),
+    (
+        Len == 12 %se for uma row
+    ->  (
+            CheckInFront == 'True'
+        ->  Counter = OriginalPosition+1,
+            (
+                Counter == DestinationPosition+1 
+            ->  ReturnBooleanValue = 'True', !
+            ;   nth0(Counter, RowOrColumnToIterate, Element),
+                (
+                    Element == clear
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ;   ReturnBooleanValue = 'False', !
+                )
+            )
+        ;   Counter = OriginalPosition-1,
+            (
+                Counter == DestinationPosition-1
+            ->  ReturnBooleanValue = 'True', !
+            ;   nth0(Counter, RowOrColumnToIterate, Element),
+                (
+                    Element == clear
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ;   ReturnBooleanValue = 'False', !
+                )
+            )
+        )
+    ;   (
+            CheckInFront == 'True'
+        ->  Counter = OriginalPosition-1,
+            (
+                Counter == DestinationPosition-1
+            ->  ReturnBooleanValue = 'True', !
+            ;   nth0(Counter, RowOrColumnToIterate, Element),
+                (
+                    Element == clear
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ;   ReturnBooleanValue = 'False', !
+                )
+            )
+        ;   Counter = OriginalPosition+1,
+            (
+                Counter == DestinationPosition+1
+            ->  ReturnBooleanValue = 'True', !
+            ;   nth0(Counter, RowOrColumnToIterate, Element),
+                (
+                    Element == clear
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ;   ReturnBooleanValue = 'False', !
+                )
+            )
+        )
+    ).
+    
+checkPieceBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnBooleanValue):-
+    loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnValue),
+    (
+        ReturnValue = 'True'
+    ->  ReturnBooleanValue = 'True', !
+    ;   ReturnBooleanValue = 'False', !
+    ).

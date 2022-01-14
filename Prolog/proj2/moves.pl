@@ -1,6 +1,7 @@
 :- use_module(library(lists)).
 :- use_module(library(random)).
 :- consult('ruleset.pl').
+:- consult('display.pl').
 
 starting_pos(Board, ValidColumn, ValidRow) :-
     write('Choose a piece to move\n'),
@@ -24,15 +25,17 @@ get_move(Board, NewBoard) :-
     checkInputColumn(IsValidC, FinalColumn),
     write('Row\n'),
     checkInputRow(IsValidR, FinalRow),
-    /*
-    checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),
-    
+    FinalColumnMove = FinalColumn,
+    FinalRowMove = FinalRow,
+    ColumnMove = Column,
+    RowMove = Row,
+    checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),    
     (  ReturnBooleanValue == 'True'
-    -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard)
+    -> move(Board, ColumnMove, RowMove, FinalColumnMove, FinalRowMove, NewBoard)
     ;  write('Invalid move!'), nl, !, fail, false
     ).
-    */
-    %move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
+
+    %move(Board, ColumnMove, RowMove, FinalColumnMove, FinalRowMove, NewBoard).
 
 
 %NOTA: usar halt. para terminar execuçao de programa

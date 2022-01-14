@@ -1,4 +1,5 @@
 :- use_module(library(random)).
+:- consult('display.pl').
 
 % Working 
 % PlayerOne is 1 and PlayerTwo is 3 (because the upperbound is not included in the interval)
@@ -89,16 +90,16 @@ accCp([H|T1],[H|T2]) :- accCp(T1,T2).
 copy(L,R) :- accCp(L,R).
 
 loopRows(Board, Rows, ColumnNumber, EL, ReturningColumn, FinalColumn) :- 
-           nth0(Rows, Board, ReturningRow),
-           nth0(ColumnNumber, ReturningRow, ReturnColumnElement),
-           append(EL, [ReturnColumnElement], Column),
-           C_Test = Column,
-           S is Rows+1, 
-           (
-               S == 8
-            -> copy(Column, FinalColumn), !
-            ;  loopRows(Board, S, ColumnNumber, Column, C_Test, FinalColumn)
-           ).
+    nth0(Rows, Board, ReturningRow),
+    nth0(ColumnNumber, ReturningRow, ReturnColumnElement),
+    append(EL, [ReturnColumnElement], Column),
+    C_Test = Column,
+    S is Rows+1, 
+    (
+        S == 8
+    -> copy(Column, FinalColumn), !
+    ;  loopRows(Board, S, ColumnNumber, Column, C_Test, FinalColumn)
+    ).
 
 getColumn(Board, ColumnNumber, FinalColumn) :-
     loopRows(Board, 0, ColumnNumber, [], ReturningColumn, FinalColumn).
@@ -121,59 +122,78 @@ checkPieceOnDestination(RowOrColumn, Destination, ReturnBooleanValue) :-
 
 % Working
 
-% If CheckInFront equals true it will check positions in front, otherwhise will check positions behind
+list_length(Xs, L) :- list_length(Xs, 0, L).
+list_length([], L, L).
+list_length([_|Xs], T, L) :-
+  T1 is T+1,
+  list_length(Xs, T1, L).
 
-loopBetween(ListToIterate, StartingPos, DestinationPosition, CheckInFront, Ret) :-
-    Counter is StartingPos,
+loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnValue) :-
+    list_length(RowOrColumnToIterate, Len),
     (
-        CheckInFront == 'True'                                                                      % se for posicao acima
-
+        Len == 12 %se for uma row
     ->  (
-            Counter == DestinationPosition                                               % verifica se está na posicao de destino
-            
-        ->  checkPieceOnDestination(ListToIterate, DestinationPosition, ReturnBooleanValue),
+            CheckInFront == 'True'
+        ->  Counter is OriginalPosition+1,
+            Counter_Check is DestinationPosition+1,
             (
-                ReturnBooleanValue == 'True'
-            ->  RetInside = 'False', !
-            ;   RetInside = 'True', !
+                Counter == Counter_Check 
+            ->  ReturnBooleanValue = 'False', !
+            ;   nth0(Counter, RowOrColumnToIterate, Element),
+                (
+                    Element == clear
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ;   ReturnBooleanValue = 'True', !
+                )
             )
-
-        ;   Counter_Two is StartingPos+1,                                                      % incrementar a posicao por um - verificar se se pode redifinir Counter
-            nth0(Counter_Two, ListToIterate, RetElem),                                           % vai buscar o elemento do contador 
+        ;   Counter is OriginalPosition-1,
+            Counter_Check is DestinationPosition-1,
             (
-                RetElem == clear
-            ->  RetInside = 'True', !
-            ;   RetInside = 'False', !
-            ),
-            loopBetween(ListToIterate, Counter_Two, DestinationPosition, CheckInFront, RetInside)
+                Counter == Counter_Check
+            ->  ReturnBooleanValue = 'False', !
+            ;   nth0(Counter, RowOrColumnToIterate, Element),
+                (
+                    Element == clear
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ;   ReturnBooleanValue = 'True', !
+                )
+            )
         )
-
     ;   (
-            Counter == DestinationPosition
-            
-        ->  checkPieceOnDestination(ListToIterate, DestinationPosition, ReturnBooleanValue),
+            CheckInFront == 'True'
+        ->  Counter is OriginalPosition-1,
+            Counter_Check is DestinationPosition-1,
             (
-                ReturnBooleanValue == 'True'
-            ->  RetInside = 'False', !
-            ;   RetInside = 'True', !
+                Counter == Counter_Check
+            ->  ReturnBooleanValue = 'False', !
+            ;   nth0(Counter, RowOrColumnToIterate, Element),
+                (
+                    Element == clear
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ;   ReturnBooleanValue = 'True', !
+                )
             )
-        ;   Counter_Two is StartingPos-1,
-            nth0(Counter_Two, ListToIterate, RetElem),                                           % vai buscar o elemento do contador 
+        ;   Counter is OriginalPosition+1,
+            Counter_Check is DestinationPosition+1,
             (
-                RetElem == clear
-            ->  RetInside = 'True', !
-            ;   RetInside = 'False', !
-            ),
-            loopBetween(ListToIterate, Counter_Two, DestinationPosition, CheckInFront, RetInside)
+                Counter == Counter_Check
+            ->  ReturnBooleanValue = 'False', !
+            ;   nth0(Counter, RowOrColumnToIterate, Element),
+                (
+                    Element == clear
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ;   ReturnBooleanValue = 'True', !
+                )
+            )
         )
     ).
-
-checkPieceBetween(ListToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnBooleanValue) :-
-    loopBetween(ListToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnValue),
+    
+checkPieceBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnBooleanValue):-
+    loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnValue),
     (
-        ReturnValue = 'True'
-    ->  ReturnBooleanValue = 'True', !
-    ; ReturnBooleanValue = 'False', !
+        ReturnValue = 'False'
+    ->  ReturnBooleanValue = 'False', !
+    ;   ReturnBooleanValue = 'True', !
     ).
 
 % ---------------------------------------------------------------
@@ -187,55 +207,47 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
     ->  (
             DestinationColumn > OriginColumn
         ->  CheckInFront = 'True'
-        ;   CheckInFront = 'False'
+        ;   CheckInFront = 'False' 
         ),
         getRow(Board, OriginRow, ReturningRow),
-        checkPieceOnDestination(ReturningRow, DestinationColumn, RetDestinaton),
+        checkPieceOnDestination(ReturningRow, DestinationColumn, RetDestination),
         (
-            RetDestinaton == 'True'
-
+            RetDestination == 'True'
         ->  ReturnBooleanValue = 'False', !
-
-        ;   checkPieceBetween(ReturningRow, OriginRow, DestinationColumn, CheckInFront, ReturnPB),
+        ;   checkPieceBetween(ReturningRow, OriginColumn, DestinationColumn, CheckInFront, ReturnPB),
             (
-                ReturnPB == 'True'
+                ReturnPB == 'False'
             ->  ReturnBooleanValue = 'True', !
             ;   ReturnBooleanValue = 'False', !
             )
         )
-
     ;   checkVerticalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow, RetVertical),
-    
         (
             RetVertical == 'True'
-
         ->  (
-                DestinationRow > OriginRow
+                DestinationRow < OriginRow
             ->  CheckInFront = 'True'
             ;   CheckInFront = 'False'
             ),
             getColumn(Board, OriginColumn, ReturningColumn),
-            checkPieceOnDestination(ReturningColumn, DestinationRow, RetDestinaton),
+            checkPieceOnDestination(ReturningColumn, DestinationRow, RetDestination),
             (
-                RetDestinaton == 'True'
+                RetDestination == 'True'
             ->  ReturnBooleanValue = 'False', !
-
-            ;   checkPieceBetween(ReturningColumn, OriginColumn, DestinationRow, CheckInFront, ReturnPB),
+            ;   checkPieceBetween(ReturningColumn, OriginRow, DestinationRow, CheckInFront, ReturnPB),
                 (
-                    ReturnPB == 'True'
+                    ReturnPB == 'False'
                 ->  ReturnBooleanValue = 'True', !
                 ;   ReturnBooleanValue = 'False', !
                 )
             )
-
         ;   ReturnBooleanValue = 'False', !
         )
     ).
 
 % ---------------------------------------------------------------
 
-% consult('/Users/pjpacheco/Desktop/FEUP/3Ano/PFL/project/PFL/Prolog/proj2/ruleset.pl'). %cccv
-% checkLegalMove(X, 0,0, 6,0,R).
+% consult('/Users/pjpacheco/Desktop/FEUP/3Ano/PFL/project/PFL/Prolog/proj2/game.pl'). %cccv
 
 /*
 
@@ -307,7 +319,7 @@ black_capture(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition, Posi
 
     ).
 
-
+*/
 
 % lista inicial, indice, elemento, lista depois
 replace([_|T], 0, X, [X|T]).
@@ -317,5 +329,3 @@ replace([H|T], I, X, [H|R]):-
     replace(T, NI, X, R), !.
 replace(L, _, _, L).
 
-
-*/
