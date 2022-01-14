@@ -1,5 +1,6 @@
 :- use_module(library(random)).
-:- consult('display.pl').
+:- use_module(library(lists)).
+:- consult('board.pl').
 
 % Working 
 % PlayerOne is 1 and PlayerTwo is 3 (because the upperbound is not included in the interval)
@@ -128,8 +129,7 @@ list_length([_|Xs], T, L) :-
   T1 is T+1,
   list_length(Xs, T1, L).
 
-loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnValue) :-
-    list_length(RowOrColumnToIterate, Len),
+loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, Len, ReturnBooleanValue) :-
     (
         Len == 12 %se for uma row
     ->  (
@@ -142,7 +142,7 @@ loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckIn
             ;   nth0(Counter, RowOrColumnToIterate, Element),
                 (
                     Element == clear
-                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Len, ReturnBooleanValue)
                 ;   ReturnBooleanValue = 'True', !
                 )
             )
@@ -154,7 +154,7 @@ loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckIn
             ;   nth0(Counter, RowOrColumnToIterate, Element),
                 (
                     Element == clear
-                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Len, ReturnBooleanValue)
                 ;   ReturnBooleanValue = 'True', !
                 )
             )
@@ -169,7 +169,7 @@ loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckIn
             ;   nth0(Counter, RowOrColumnToIterate, Element),
                 (
                     Element == clear
-                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Len, ReturnBooleanValue)
                 ;   ReturnBooleanValue = 'True', !
                 )
             )
@@ -181,7 +181,7 @@ loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckIn
             ;   nth0(Counter, RowOrColumnToIterate, Element),
                 (
                     Element == clear
-                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Ret)
+                ->  loopBetween(RowOrColumnToIterate, Counter, DestinationPosition, CheckInFront, Len, ReturnBooleanValue)
                 ;   ReturnBooleanValue = 'True', !
                 )
             )
@@ -189,11 +189,12 @@ loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckIn
     ).
     
 checkPieceBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnBooleanValue):-
-    loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnValue),
+    list_length(RowOrColumnToIterate, Len),
+    loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, Len, ReturnValue),
     (
-        ReturnValue = 'False'
-    ->  ReturnBooleanValue = 'False', !
-    ;   ReturnBooleanValue = 'True', !
+        ReturnValue == 'True'
+    ->  ReturnBooleanValue = 'True', !
+    ;   ReturnBooleanValue = 'False', !
     ).
 
 % ---------------------------------------------------------------
@@ -236,9 +237,9 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
             ->  ReturnBooleanValue = 'False', !
             ;   checkPieceBetween(ReturningColumn, OriginRow, DestinationRow, CheckInFront, ReturnPB),
                 (
-                    ReturnPB == 'False'
-                ->  ReturnBooleanValue = 'True', !
-                ;   ReturnBooleanValue = 'False', !
+                    ReturnPB == 'True'
+                ->  ReturnBooleanValue = 'False', !
+                ;   ReturnBooleanValue = 'True', !
                 )
             )
         ;   ReturnBooleanValue = 'False', !
@@ -247,7 +248,12 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
 
 % ---------------------------------------------------------------
 
-% consult('/Users/pjpacheco/Desktop/FEUP/3Ano/PFL/project/PFL/Prolog/proj2/game.pl'). %cccv
+test_logic(X) :-
+    starting_board(Board),
+    checkLegalMove(Board, 0, 7, 0, 5, R),
+    write(R).
+
+% consult('/Users/pjpacheco/Desktop/FEUP/3Ano/PFL/project/PFL/Prolog/proj2/ruleset.pl'). %cccv
 
 /*
 

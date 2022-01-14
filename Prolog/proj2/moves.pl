@@ -25,13 +25,9 @@ get_move(Board, NewBoard) :-
     checkInputColumn(IsValidC, FinalColumn),
     write('Row\n'),
     checkInputRow(IsValidR, FinalRow),
-    FinalColumnMove = FinalColumn,
-    FinalRowMove = FinalRow,
-    ColumnMove = Column,
-    RowMove = Row,
     checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),    
     (  ReturnBooleanValue == 'True'
-    -> move(Board, ColumnMove, RowMove, FinalColumnMove, FinalRowMove, NewBoard)
+    -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard)
     ;  write('Invalid move!'), nl, !, fail, false
     ).
 
