@@ -81,3 +81,27 @@ descendant(X, Y):-
                 parent(Y,Z),    %x é descendant se y for pai de Z
                 descendant(X,Z).    % e z pai de X
 
+
+%ficha 3
+children(Person, Children) :-
+    findall(Child, parent(Person, Child), Children).
+
+children1(Person, Children) :-
+    bagof(Child, parent(Person, Child), Children).
+
+children_of(ListOfPeople, ListOfPairs) :-
+    bagof(Child, parent(Person, Child), Children),
+    ListOfPairs = Person-Children.
+
+
+%ficha 4
+add_person :-
+    write('male or female?\n'),
+    read(Sex),
+    write('name of the person:\n'),
+    read(Person),
+    (Sex == male
+        ->assertz(male(Person))
+        ;assertz(female(Person))
+    ).
+        
