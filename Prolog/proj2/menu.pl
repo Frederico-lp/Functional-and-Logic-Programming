@@ -14,7 +14,7 @@ print_menu :-
 
 menu_options(3).
 menu_options(1):- ai_menu.
-menu_options(2):- write('to do').
+menu_options(2):- print_htp_menu.
 
 
 /*
@@ -46,6 +46,37 @@ print_ai_menu:-
 ai_options(3).
 ai_options(1) :- start_game(1).
 ai_options(2) :- start_game(2).
+
+print_htp_menu:-
+    nl,
+    print('================================================'), nl,
+    print('|                How to Play                   |'), nl,
+    print('================================================'), nl,
+    print('                                                '), nl,
+    print(' You play as white (w);                         '), nl,
+    print('                                                '), nl,
+    print(' Pick your piece by choosing the column and the '), nl,
+    print(' row its at                                     '), nl,
+    print('                                                '), nl,
+    print(' Pick the place you wish to put your piece by   '), nl,
+    print(' selecting its column and row                   '), nl,
+    print('                                                '), nl,
+    print(' Pieces can not "jump" above other pieces       '), nl,
+    print('                                                '), nl,
+    print(' Capture a piece by trapping it between two of  '), nl,
+    print(' of your pieces                                 '), nl,
+    print('                                                '), nl,
+    print(' Pieces ONLY move horizontally or vertically'    ), nl,
+    print('                                                '), nl,
+    print(' Win by capturing 7 pieces                      '), nl,
+    print('                                                '), nl,
+    print(' If no legal moves exists, player with most     '), nl,
+    print(' captured pieces win                            '), nl,
+    print('                                                '), nl,
+    print('================================================'), nl,
+    print_menu,
+    read(Input),
+    menu_options(Input).
 
 
 start :-
