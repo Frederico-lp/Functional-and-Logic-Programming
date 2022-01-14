@@ -17,10 +17,11 @@ start_game(Level):-
 % game_loop(_,_,_,1) :-
 %     write("Black player won!").
 game_loop(Board, Player, WhiteWon, BlackWon, Level) :-
-    (Player == w 
+    (  Player == w 
         %white player
-        -> write_board(Board), get_move(Board, NewBoard), game_loop(NewBoard, b, 0 ,0, Level)
+    -> write_board(Board), get_move(Board, NewBoard), game_loop(NewBoard, b, 0 ,0, Level)
         %black player(AI)
-        ; write_board(Board), ai_play(Board, NewBoard), game_loop(NewBoard, w, 0 ,0, Level)).
+    ; write_board(Board), ai_play(Board, NewBoard), game_loop(NewBoard, w, 0 ,0, Level)
+    ).
 
     
