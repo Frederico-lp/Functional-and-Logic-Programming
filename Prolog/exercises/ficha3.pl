@@ -51,7 +51,6 @@ print_1n(S, N, Index) :-
     (Index+1 =:= N -> stop(1); print_1n(S, N, Index+1)).
 stop(1).
 
-%5. 
 %print_text(+Text, +Symbol, +Padding)
 print_text(Text, Symbol, Padding) :-
     write(Symbol),
@@ -66,3 +65,20 @@ my_string([]).
 my_string([H|T]) :- 
     put_code(H),
     my_string(T).
+
+
+
+
+%5. 
+%a)
+children(Person, Children) :-
+    findall(Child, parent(homer, Child), Children).
+
+%b).
+children_of(ListOfPeople, ListOfPairs) :-
+    bagof(Child, parent(Person, Child), Children),
+    ListOfPairs = (Person, Children).
+    
+
+
+
