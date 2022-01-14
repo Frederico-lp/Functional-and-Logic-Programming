@@ -24,12 +24,15 @@ get_move(Board, NewBoard) :-
     checkInputColumn(IsValidC, FinalColumn),
     write('Row\n'),
     checkInputRow(IsValidR, FinalRow),
-    %checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),
-    % (ReturnBooleanValue
-    % -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard); 
-    % write('Invalid move!')
-    % ).
-    move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
+    /*
+    checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),
+    
+    (  ReturnBooleanValue == 'True'
+    -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard)
+    ;  write('Invalid move!'), nl, !, fail, false
+    ).
+    */
+    %move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
 
 
 %NOTA: usar halt. para terminar execuçao de programa

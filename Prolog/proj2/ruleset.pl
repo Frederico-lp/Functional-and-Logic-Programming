@@ -1,9 +1,5 @@
 :- use_module(library(random)).
 
-:- consult('board.pl').
-:- consult('moves.pl').
-:- consult('display.pl').
-
 % Working 
 % PlayerOne is 1 and PlayerTwo is 3 (because the upperbound is not included in the interval)
 
@@ -116,9 +112,9 @@ checkPieceOnDestination(RowOrColumn, Destination, ReturnBooleanValue) :-
     (
         Piece == clear
 
-    ->  ReturnBooleanValue = 'True', !
+    ->  ReturnBooleanValue = 'False', !
 
-    ; ReturnBooleanValue = 'False', ! 
+    ; ReturnBooleanValue = 'True', ! 
     ).
     
 % ---------------------------------------------------------------
@@ -184,8 +180,7 @@ checkPieceBetween(ListToIterate, OriginalPosition, DestinationPosition, CheckInF
 
 % Working
 
-checkLegalMove(_, OriginColumn, OriginRow, DestinationColumn, DestinationRow, ReturnBooleanValue) :-
-    starting_board(Board),
+checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow, ReturnBooleanValue) :-
     checkHorizontalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow, RetHorizontal),
     (
         RetHorizontal == 'True'
@@ -237,11 +232,10 @@ checkLegalMove(_, OriginColumn, OriginRow, DestinationColumn, DestinationRow, Re
         )
     ).
 
-% consult('/Users/pjpacheco/Desktop/FEUP/3Ano/PFL/project/PFL/Prolog/proj2/ruleset.pl'). %cccv
-% checkLegalMove(X, 0,0, 0,7,R).
-
-
 % ---------------------------------------------------------------
+
+% consult('/Users/pjpacheco/Desktop/FEUP/3Ano/PFL/project/PFL/Prolog/proj2/ruleset.pl'). %cccv
+% checkLegalMove(X, 0,0, 6,0,R).
 
 /*
 
