@@ -32,7 +32,7 @@ get_move(Board, NewBoard) :-
     checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),    
     (  ReturnBooleanValue == 'True'
     -> move(Board, ColumnMove, RowMove, FinalColumnMove, FinalRowMove, NewBoard)
-    ;  write('Invalid move!'), nl, !, fail, false
+    ;  write('Invalid move!'), !, get_move(Board, NewBoard)
     ).
 
     %move(Board, ColumnMove, RowMove, FinalColumnMove, FinalRowMove, NewBoard).
