@@ -251,20 +251,34 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
 
 
 
-check_captures(Board, NewBoard, WCapture, BCapture) :-
-    check_horizontal_captures(Board, NewBoard, 0, BCapture, WCapture).
+check_captures(Board, NewBoard, WCapture) :-
+    check_horizontal_captures(Board, NewBoard, 0, WCapture).
     %check_vertical_captures(Board, 0, BCapture, WCapture).
 
 
-check_horizontal_captures(Board, NewBoard, 8, BCapture, WCapture).
-check_horizontal_captures(Board, NewBoard, RowNumber, BCapture, WCapture) :-
-    %write('1'),
+check_horizontal_captures(Board, NewBoard, 8, WCapture).
+check_horizontal_captures(Board, NewBoard, RowNumber, WCapture) :-
     nth0(RowNumber, Board, ReturningRow),
     %write(ReturningRow),
-    white_capture(Board, NewBoard, RowNumber, ReturningRow, WCapture, 0),
+    white_capture(Board, TempBoard, RowNumber, ReturningRow, TempWCapture, 0),
     %black_capture(Board, NewBoard, RowNumber, ReturningRow, BCapture, 0, Position),
     NewRowNumber is RowNumber + 1,
-    check_horizontal_captures(Board, NewBoard, NewRowNumber, BCapture, WCapture).
+    (TempWCapture == 0
+        %no pieces captured in that iteration
+        -> (NewRowNumber == 8
+            %last iteration
+            ->append(TempBoard, [], NewBoard),
+            WCapture = TempWCapture,
+            check_horizontal_captures(Board, TempBoard, 8, WCapture)
+            %every other iteration
+            ; check_horizontal_captures(Board, NewBoard, NewRowNumber, WCapture)
+        )
+        %piece captured, force finish of function
+        ;append(TempBoard, [], NewBoard),
+        WCapture = TempWCapture,
+        check_horizontal_captures(Board, TempBoard, 8, WCapture),!
+        
+    ).
     %write('3\n'),
 
 
@@ -282,52 +296,52 @@ white_capture(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition) :-
     nth0(CurrentPosition, List, Element1),
     nth0(Second, List, Element2),
     nth0(Third, List, Element3),
-    write(Element1), write(Element2), write(Element3),nl,
 
     ((Element1 == w, Element2 == b, Element3 == w)
-        ->write(List),
-        %WCapture is 1,
+        ->WCapture is 1,
         %write(List)
         replace(List, Second, clear, NewList),
-        write(NewList),
-        replace(Board, ListNumber, NewList, TestBoard),
+        replace(Board, ListNumber, NewList, NewBoard),
+        !,true
+
         %append(TestBoard, [], NewBoard),
-        write_board(TestBoard), halt
+        %write_board(NewBoard), halt
         
 
         ;NewPosition is CurrentPosition+1,
         (NewPosition \== 10 
             ->white_capture(Board, NewBoard, ListNumber, List, WCapture, NewPosition),!
             ;WCapture = 0,
-            append(Board, [], NewBoard)
+            append(Board, [], NewBoard),!,true
         )
     ).
 
 
-black_capture(_, _, _, _, _, 11, _).
-black_capture(Board, NewBoard, ListNumber, List, BCapture, CurrentPosition, Position) :-
+black_capture(Board, NewBoard, ListNumber, List, BCapture, CurrentPosition) :-
     Second is CurrentPosition + 1,
     Third is CurrentPosition + 2,
     %get the 3 elements
     nth0(CurrentPosition, List, Element1),
     nth0(Second, List, Element2),
     nth0(Third, List, Element3),
-    (Element1 == b 
-        %b
-        ->(Element2 == w
-            %bw
-            ->(Element3 == b
-                %bwb
-                -> BCapture = 1, 
-                Position = CurrentPosition,
-                replace(List, Second, clear, NewList),
-                replace(Board, ListNumber, NewList, NewBoard)
-            )
-        );
-        NewPosition is CurrentPosition+1,
-        black_capture(Board, NewBoard, ListNumber, List, WCapture, NewPosition, Position)
 
+    ((Element1 == w, Element2 == b, Element3 == w)
+        ->BCapture is 1,
+        %write(List)
+        replace(List, Second, clear, NewList),
+        replace(Board, ListNumber, NewList, NewBoard),
+        !,true
 
+        %append(TestBoard, [], NewBoard),
+        %write_board(NewBoard), halt
+        
+
+        ;NewPosition is CurrentPosition+1,
+        (NewPosition \== 10 
+            ->black_capture(Board, NewBoard, ListNumber, List, BCapture, NewPosition),!
+            ;WCapture = 0,
+            append(Board, [], NewBoard),!,true
+        )
     ).
 
 
