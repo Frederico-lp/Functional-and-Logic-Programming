@@ -251,32 +251,44 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
 
 
 
-check_captures(Board, NewBoard, WCapture) :-
-    check_horizontal_captures(Board, NewBoard, 0, WCapture).
+check_captures(Board, NewBoard, WCapture, BCapture) :-
+    check_horizontal_captures(Board, NewBoard, 0, WCapture, BCapture).
     %check_vertical_captures(Board, 0, BCapture, WCapture).
 
 
-check_horizontal_captures(Board, NewBoard, 8, WCapture).
-check_horizontal_captures(Board, NewBoard, RowNumber, WCapture) :-
+check_horizontal_captures(Board, NewBoard, 8, WCapture, BCapture).
+check_horizontal_captures(Board, NewBoard, RowNumber, WCapture, BCapture) :-
     nth0(RowNumber, Board, ReturningRow),
     %write(ReturningRow),
-    white_capture(Board, TempBoard, RowNumber, ReturningRow, TempWCapture, 0),
+    white_capture(Board, TempWBoard, RowNumber, ReturningRow, TempWCapture, 0),
+    black_capture(Board, TempBBoard, RowNumber, ReturningRow, TempBCapture, 0),
     %black_capture(Board, NewBoard, RowNumber, ReturningRow, BCapture, 0, Position),
     NewRowNumber is RowNumber + 1,
-    (TempWCapture == 0
+    ( (TempWCapture == 0 , TempBCapture == 0)
         %no pieces captured in that iteration
         -> (NewRowNumber == 8
             %last iteration
-            ->append(TempBoard, [], NewBoard),
+            ->append(TempWBoard, [], NewBoard),
             WCapture = TempWCapture,
-            check_horizontal_captures(Board, TempBoard, 8, WCapture)
+            BCapture = TempBCapture,
+            write(WCapture),nl,write(BCapture),nl,
+            check_horizontal_captures(Board, TempWBoard, 8, WCapture, BCapture)
             %every other iteration
-            ; check_horizontal_captures(Board, NewBoard, NewRowNumber, WCapture)
+            ; check_horizontal_captures(Board, NewBoard, NewRowNumber, WCapture, BCapture)
         )
         %piece captured, force finish of function
-        ;append(TempBoard, [], NewBoard),
-        WCapture = TempWCapture,
-        check_horizontal_captures(Board, TempBoard, 8, WCapture),!
+        ;(TempWCapture == 1
+            %white piece captured
+            ->append(TempWBoard, [], NewBoard),
+            WCapture = TempWCapture,
+            BCapture = 0,
+            check_horizontal_captures(Board, TempWBoard, 8, WCapture, BCapture),!
+            %black piece captured
+            ;append(TempBBoard, [], NewBoard),
+            WCapture = 0,
+            BCapture = TempBCapture,
+            check_horizontal_captures(Board, TempBBoard, 8, WCapture, BCapture),!
+        )
         
     ).
     %write('3\n'),
@@ -339,7 +351,7 @@ black_capture(Board, NewBoard, ListNumber, List, BCapture, CurrentPosition) :-
         ;NewPosition is CurrentPosition+1,
         (NewPosition \== 10 
             ->black_capture(Board, NewBoard, ListNumber, List, BCapture, NewPosition),!
-            ;WCapture = 0,
+            ;BCapture = 0,
             append(Board, [], NewBoard),!,true
         )
     ).
