@@ -114,10 +114,14 @@ ai_play(Board, NewBoard) :-
     random_member(Final, ClearList),
     nth0(0, Final, FinalRow),
     nth0(1, Final, FinalColumn),
-    %check if move is valid 
-    %TO-DO
+    %check if move is valid and move if so
+    checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),    
+    (  ReturnBooleanValue == 'True'
+    -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard)
+    ;  !, ai_play(Board, NewBoard)
+    ).
     %move
-    move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
+    %move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
     %random_member(X, Moves).
 
 %add element to the end of the list.
