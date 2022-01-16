@@ -249,17 +249,23 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
 
 % consult('/Users/pjpacheco/Desktop/FEUP/3Ano/PFL/project/PFL/Prolog/proj2/game.pl'). %cccv
 
-/*
-
-check_captures(Board, BCapture, WCapture) :-
-    check_horizontal_captures(Board, 0, BCapture, WCapture),
-    check_vertical_captures(Board, 0, BCapture, WCapture).
 
 
-check_horizontal_captures(Board, RowNumber, BCapture, WCapture) :-
-    getRow(Board, RowNumber, ReturningRow),
-    white_capture(Board, NewBoard, RowNumber, ReturningRow, WCapture, 0, Position),
-    black_capture(Board, NewBoard, RowNumber, ReturningRow, BCapture, 0, Position).
+check_captures(Board, NewBoard, WCapture, BCapture) :-
+    check_horizontal_captures(Board, NewBoard, 0, BCapture, WCapture).
+    %check_vertical_captures(Board, 0, BCapture, WCapture).
+
+
+check_horizontal_captures(Board, NewBoard, 8, BCapture, WCapture).
+check_horizontal_captures(Board, NewBoard, RowNumber, BCapture, WCapture) :-
+    %write('1'),
+    nth0(RowNumber, Board, ReturningRow),
+    %write(ReturningRow),
+    white_capture(Board, NewBoard, RowNumber, ReturningRow, WCapture, 0),
+    %black_capture(Board, NewBoard, RowNumber, ReturningRow, BCapture, 0, Position),
+    NewRowNumber is RowNumber + 1,
+    check_horizontal_captures(Board, NewBoard, NewRowNumber, BCapture, WCapture).
+    %write('3\n'),
 
 
 
@@ -267,38 +273,43 @@ check_vertical_captures(Board, Column, BCapture, WCapture) :-
     getColumn(Board, Column, FinalColumn).
 
 
-white_capture(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition, Position) :-
+% white_capture(Board, NewBoard, _, _, _, 10, Position).
+%     %Position = 99, !.
+white_capture(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition) :-
     Second is CurrentPosition + 1,
     Third is CurrentPosition + 2,
     %get the 3 elements
     nth0(CurrentPosition, List, Element1),
     nth0(Second, List, Element2),
     nth0(Third, List, Element3),
-    (Element1 == w 
-        %w
-        ->(Element2 == b
-            %wb
-            ->(Element3 == w
-                %wbw
-                -> NewWCapture is WCapture + 1, 
-                Position = CurrentPosition,
-                replace(List, Second, clear, NewList),
-                replace(Board, ListNumber, NewList, NewBoard).
+    write(Element1), write(Element2), write(Element3),nl,
 
-            )
-        );
-        NewPosition is CurrentPosition + 1,
-        white_capture(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition, Position)
+    ((Element1 == w, Element2 == b, Element3 == w)
+        ->write(List),
+        %WCapture is 1,
+        %write(List)
+        replace(List, Second, clear, NewList),
+        write(NewList),
+        replace(Board, ListNumber, NewList, TestBoard),
+        %append(TestBoard, [], NewBoard),
+        write_board(TestBoard), halt
+        
 
-
+        ;NewPosition is CurrentPosition+1,
+        (NewPosition \== 10 
+            ->white_capture(Board, NewBoard, ListNumber, List, WCapture, NewPosition),!
+            ;WCapture = 0,
+            append(Board, [], NewBoard)
+        )
     ).
 
 
-black_capture(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition, Position) :-
-    Second is Position + 1,
-    Third is Position + 2,
+black_capture(_, _, _, _, _, 11, _).
+black_capture(Board, NewBoard, ListNumber, List, BCapture, CurrentPosition, Position) :-
+    Second is CurrentPosition + 1,
+    Third is CurrentPosition + 2,
     %get the 3 elements
-    nth0(Position, List, Element1),
+    nth0(CurrentPosition, List, Element1),
     nth0(Second, List, Element2),
     nth0(Third, List, Element3),
     (Element1 == b 
@@ -307,19 +318,19 @@ black_capture(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition, Posi
             %bw
             ->(Element3 == b
                 %bwb
-                -> NewWCapture is WCapture + 1, 
+                -> BCapture = 1, 
+                Position = CurrentPosition,
                 replace(List, Second, clear, NewList),
-                replace(Board, ListNumber, NewList, NewBoard).
-
-            ),
+                replace(Board, ListNumber, NewList, NewBoard)
+            )
         );
-        NewPosition is CurrentPosition + 1,
-        white_capture(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition, Position)
+        NewPosition is CurrentPosition+1,
+        black_capture(Board, NewBoard, ListNumber, List, WCapture, NewPosition, Position)
 
 
     ).
 
-*/
+
 
 % lista inicial, indice, elemento, lista depois
 replace([_|T], 0, X, [X|T]).
