@@ -27,14 +27,16 @@ print_game_menu:-
     print('                1 - Player vs AI                '), nl,
     print('                2 - Player vs Player            '), nl,
     print('                3 - AI vs AI                    '), nl,
-    print('                4 - Back                        '), nl,
+    print('                4 - AI vs Player                '), nl,
+    print('                5 - Back                        '), nl,
     print('                                                '), nl,
     print('================================================'), nl.
 
-enemy_options(4) :- play.
+enemy_options(5) :- play.
 enemy_options(1) :- start_game(1).
 enemy_options(2) :- start_game_2(1).
 enemy_options(3) :- start_game_3(1).
+enemy_options(4) :- start_game_4(1).
 
 print_ai_menu:-
     nl,

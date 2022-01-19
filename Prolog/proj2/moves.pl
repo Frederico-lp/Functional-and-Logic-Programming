@@ -60,8 +60,8 @@ horizontalMove(Board, Row, Column, FinalColumn, NewBoard) :-
     %put piece in new position
     replace(NewRowList, FinalColumn, Element, FinalRowList),
     %replace the old row with the new one
-    replace(Board, Row, FinalRowList, NewBoard),
-    write('horizontal\n').
+    replace(Board, Row, FinalRowList, NewBoard).
+    %write('horizontal\n').
 
 
 verticalMove(Board, Column, Row, FinalRow, NewBoard) :-
@@ -77,8 +77,8 @@ verticalMove(Board, Column, Row, FinalRow, NewBoard) :-
     nth0(FinalRow, Board, FinalRowList),
     replace(FinalRowList, Column, Element, NewFinalRowList),
     %replace the old row with the new one
-    replace(IntermediateBoard, FinalRow, NewFinalRowList, NewBoard),
-    write('vertical\n').
+    replace(IntermediateBoard, FinalRow, NewFinalRowList, NewBoard).
+    %write('vertical\n').
 
 
 
