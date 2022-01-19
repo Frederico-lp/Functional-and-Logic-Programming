@@ -2,7 +2,7 @@
 :- use_module(library(lists)).
 :- consult('board.pl').
 
-% Working 
+% Choose a randomly start player 
 % PlayerOne is 1 and PlayerTwo is 3 (because the upperbound is not included in the interval)
 
 choosePlayer(PlayerOne, PlayerTwo, FirstToPlay) :-
@@ -10,7 +10,7 @@ choosePlayer(PlayerOne, PlayerTwo, FirstToPlay) :-
 
 % ---------------------------------------------------------------
 
-% Working
+% Changes players turns
 
 changeTurn(CurrentPlayer, NextPlayer) :- 
     (
@@ -21,13 +21,13 @@ changeTurn(CurrentPlayer, NextPlayer) :-
     
 % ---------------------------------------------------------------
 
-% Working
+% Checks if it is an horizontal move
 
 checkHorizontalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
     (
         Column \= FinalColumn
     ->  (
-            Row =:= FinalRow
+            Row == FinalRow
         -> ReturnBooleanValue = 'True'
         ; ReturnBooleanValue = 'False'
         )
@@ -36,13 +36,13 @@ checkHorizontalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
 
 % ---------------------------------------------------------------
 
-% Working
+% Checks if it is a vertical move
 
 checkVerticalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
     (
         Row \= FinalRow
     ->  (
-            Column =:= FinalColumn
+            Column == FinalColumn
         -> ReturnBooleanValue = 'True'
         ; ReturnBooleanValue = 'False'
         )
@@ -51,7 +51,7 @@ checkVerticalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
 
 % ---------------------------------------------------------------
 
-% Working
+% Checks if the row is valid
 
 checkInputRow(IsValid, Row):-
     repeat,
@@ -64,7 +64,7 @@ checkInputRow(IsValid, Row):-
 
 % ---------------------------------------------------------------
 
-% Working
+% Checks if the column is valid
 
 checkInputColumn(IsValid, Column):-
     repeat,
@@ -77,14 +77,14 @@ checkInputColumn(IsValid, Column):-
 
 % ---------------------------------------------------------------
 
-% Working
+% Returns a Row
 
 getRow(Board, RowNumber, ReturningRow) :-
     nth0(RowNumber, Board, ReturningRow).
 
 % ---------------------------------------------------------------
 
-% Working
+% Returns a column
 
 accCp([],[]).
 accCp([H|T1],[H|T2]) :- accCp(T1,T2).
@@ -107,7 +107,7 @@ getColumn(Board, ColumnNumber, FinalColumn) :-
 
 % ---------------------------------------------------------------
 
-% Working 
+% Checks if there is a piece at the destination position
 
 checkPieceOnDestination(RowOrColumn, Destination, ReturnBooleanValue) :-
     nth0(Destination, RowOrColumn, Piece),
@@ -121,7 +121,7 @@ checkPieceOnDestination(RowOrColumn, Destination, ReturnBooleanValue) :-
     
 % ---------------------------------------------------------------
 
-% Working
+% Checks if there is a piece between the original position and the destination position
 
 list_length(Xs, L) :- list_length(Xs, 0, L).
 list_length([], L, L).
@@ -199,7 +199,7 @@ checkPieceBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, C
 
 % ---------------------------------------------------------------
 
-% Working
+% Checks if the move is legal
 
 checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow, ReturnBooleanValue) :-
     checkHorizontalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow, RetHorizontal),
