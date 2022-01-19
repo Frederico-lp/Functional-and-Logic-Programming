@@ -13,23 +13,28 @@ print_menu :-
 
 
 menu_options(3).
-menu_options(1):- ai_menu.
+menu_options(1):- enemy_menu.
 menu_options(2):- print_htp_menu.
 
 
-/*
+
 print_game_menu:-
     nl,
     print('================================================'), nl,
     print('|                    GAME                      |'), nl,
     print('================================================'), nl,
     print('                                                '), nl,
-    print('                1 - Player vs Player            '), nl,
-    print('                2 - Player vs AI                '), nl,
+    print('                1 - Player vs AI                '), nl,
+    print('                2 - Player vs Player            '), nl,
+    print('                3 - AI vs AI                    '), nl,
     print('                4 - Back                        '), nl,
     print('                                                '), nl,
     print('================================================'), nl.
-*/
+
+enemy_options(4) :- play.
+enemy_options(1) :- start_game(1).
+enemy_options(2) :- start_game_2(1).
+enemy_options(3) :- start_game_3(1).
 
 print_ai_menu:-
     nl,
@@ -79,7 +84,7 @@ print_htp_menu:-
     menu_options(Input).
 
 
-start :-
+play :-
     print_menu,
     read(Input),
     menu_options(Input).
@@ -88,3 +93,8 @@ ai_menu :-
     print_ai_menu,
     read(Input),
     ai_options(Input).
+
+enemy_menu :-
+    print_game_menu,
+    read(Input),
+    enemy_options(Input).

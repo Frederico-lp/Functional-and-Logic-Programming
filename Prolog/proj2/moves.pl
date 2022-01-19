@@ -3,7 +3,7 @@
 :- consult('ruleset.pl').
 :- consult('display.pl').
 
-starting_pos(Board, ValidColumn, ValidRow) :-
+starting_pos(Board, ValidColumn, ValidRow, Player) :-
     write('Choose a piece to move\n'),
     write('Column\n'),
     checkInputColumn(IsValidC, Column),
@@ -12,14 +12,14 @@ starting_pos(Board, ValidColumn, ValidRow) :-
 
     nth0(Row, Board, RowList),
     nth0(Column, RowList, Element),
-    (Element == w 
+    (Element == Player 
         ->ValidRow = Row, ValidColumn = Column, !, true
-        ; write('Invalid, that is not a white piece!\n'), starting_pos(Board, ValidColumn, ValidRow)
+        ; write('Invalid, that is not your piece!\n'), starting_pos(Board, ValidColumn, ValidRow, Player)
     ).
 
-
-get_move(Board, NewBoard) :-
-    starting_pos(Board, Column, Row),
+%Player is w or b
+get_move(Board, NewBoard, Player) :-
+    starting_pos(Board, Column, Row, Player),
     write('Choose where to move it\n'),
     write('Column\n'),
     checkInputColumn(IsValidC, FinalColumn),
@@ -28,7 +28,7 @@ get_move(Board, NewBoard) :-
     checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),    
     (  ReturnBooleanValue == 'True'
     -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard)
-    ;  write('Invalid move!'), !, get_move(Board, NewBoard)
+    ;  write('Invalid move!'), !, get_move(Board, NewBoard, Player)
     %;  write('Invalid move!'), nl, !, fail, false
     ).
 
@@ -102,9 +102,9 @@ insert(El, [G | R], P, [G | Res]):-
 % last'(X,[_|Z]) :- last(X,Z).
 
 
-ai_play(Board, NewBoard) :-
+ai_play(Board, NewBoard, Color) :-
     %findall(Move, checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow, Move), Moves),
-    black_pieces(Board, 0, 0, List, BlackList),
+    get_pieces(Board, 0, 0, List, BlackList, Color),
     empty_places(Board, 0, 0, List1, ClearList),
     %get initial position
     random_member(Initial, BlackList),
@@ -118,7 +118,7 @@ ai_play(Board, NewBoard) :-
     checkLegalMove(Board, Column, Row, FinalColumn, FinalRow, ReturnBooleanValue),    
     (  ReturnBooleanValue == 'True'
     -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard)
-    ;  !, ai_play(Board, NewBoard)
+    ;  !, ai_play(Board, NewBoard, Color)
     ).
     %move
     %move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
@@ -130,16 +130,16 @@ add_tail([],X,[X]).
 add_tail([H|T],X,[H|L]):-add_tail(T,X,L).
 
 %list of lists with black pieces and it's position
-black_pieces(_, 8, _, List, FinalList):- copy(List,FinalList).   %final row
-black_pieces(Board, Row, 12, List, FinalList):-
+get_pieces(_, 8, _, List, FinalList, Color):- copy(List,FinalList).   %final row
+get_pieces(Board, Row, 12, List, FinalList, Color):-
     NewRow is Row+1,
-    black_pieces(Board, NewRow, 0, List, FinalList).    %next row
-black_pieces(Board, Row, Column, List, FinalList) :- %row and column starts at 0,0
+    get_pieces(Board, NewRow, 0, List, FinalList, Color).    %next row
+get_pieces(Board, Row, Column, List, FinalList, Color) :- %row and column starts at 0,0
     nth0(Row, Board, RowList),
     nth0(Column, RowList, Element),
-    (Element == b 
-        -> add_tail(List,[Row, Column], NewList), NewColumn is Column+1, black_pieces(Board, Row, NewColumn, NewList, FinalList)
-        ; NewColumn is Column+1, black_pieces(Board, Row, NewColumn, List, FinalList)
+    (Element == Color
+        -> add_tail(List,[Row, Column], NewList), NewColumn is Column+1, get_pieces(Board, Row, NewColumn, NewList, FinalList, Color)
+        ; NewColumn is Column+1, get_pieces(Board, Row, NewColumn, List, FinalList, Color)
     ).
 
 %list of lists with black pieces and it's position

@@ -277,7 +277,7 @@ check_horizontal_captures(Board, NewBoard, RowNumber, WCapture, BCapture) :-
             ->append(TempWBoard, [], NewBoard),
             WCapture = TempWCapture,
             BCapture = TempBCapture,
-            write(WCapture),nl,write(BCapture),nl,
+            %write(WCapture),nl,write(BCapture),nl,
             check_horizontal_captures(Board, TempWBoard, 8, WCapture, BCapture)
             %every other iteration
             ; check_horizontal_captures(Board, NewBoard, NewRowNumber, WCapture, BCapture)
