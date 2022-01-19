@@ -427,9 +427,9 @@ white_capture_vertical(Board, NewBoard, ListNumber, List, WCapture, CurrentPosit
         %write(List)
         %replace(List, Second, clear, NewList),
         %nth0(ListNumber, ReturningRow, NewList),
-        nth0(Third, Board, ReturningRow),
+        nth0(Second, Board, ReturningRow),
         replace(ReturningRow, ListNumber, clear, NewList),
-        replace(Board, ListNumber, NewList, NewBoard),
+        replace(Board, Second, NewList, NewBoard),
         !,true
 
         %append(TestBoard, [], NewBoard),
@@ -457,9 +457,9 @@ black_capture_vertical(Board, NewBoard, ListNumber, List, WCapture, CurrentPosit
         ->WCapture is 1,
         %write(List)
         %replace(List, Second, clear, NewList),
-        nth0(Third, Board, ReturningRow),
+        nth0(Second, Board, ReturningRow),
         replace(ReturningRow, ListNumber, clear, NewList),
-        replace(Board, ListNumber, NewList, NewBoard),
+        replace(Board, Second, NewList, NewBoard),
         !,true
 
         %append(TestBoard, [], NewBoard),
