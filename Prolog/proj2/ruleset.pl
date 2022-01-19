@@ -343,7 +343,7 @@ black_capture(Board, NewBoard, ListNumber, List, BCapture, CurrentPosition) :-
     nth0(Second, List, Element2),
     nth0(Third, List, Element3),
 
-    ((Element1 == w, Element2 == b, Element3 == w)
+    ((Element1 == b, Element2 == w, Element3 == b)
         ->BCapture is 1,
         %write(List)
         replace(List, Second, clear, NewList),
