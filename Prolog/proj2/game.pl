@@ -17,6 +17,7 @@ game_loop(Board,_,2,_,_) :-
     write_board(Board),
     write('White player won!').
 game_loop(Board,_,_,2,_) :-
+    write_board(Board),
     write('Black player won!').
 game_loop(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
     ( Player == w 
@@ -53,6 +54,7 @@ game_loop2(Board,_,2,_,_) :-
     write_board(Board),
     write('White player won!').
 game_loop2(Board,_,_,2,_) :-
+    write_board(Board),
     write('Black player won!').
 game_loop2(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
     ( Player == w 
@@ -89,6 +91,7 @@ game_loop3(Board,_,2,_,_) :-
     write_board(Board),
     write('White player won!').
 game_loop3(Board,_,_,2,_) :-
+    write_board(Board),
     write('Black player won!').
 game_loop3(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
     ( Player == w 

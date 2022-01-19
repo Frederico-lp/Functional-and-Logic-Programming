@@ -262,10 +262,10 @@ check_captures(Board, NewBoard, WCapture, BCapture) :-
     check_vertical_captures(TempBoard, NewBoard, 0, VWCapture, VBCapture),
     % WCapture is VWCapture,
     % BCapture is (VBCapture + 1).
-    WTemp is (HWCapture + VWCapture),
-    WCapture is WTemp,
-    BTemp is (HBCapture + VBCapture),
-    BCapture is BTemp.
+    WCapture is (HWCapture + VWCapture),
+    %WCapture is WTemp,
+    BCapture is (HBCapture + VBCapture).
+    %BCapture is BTemp.
 
 
 
