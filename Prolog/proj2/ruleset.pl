@@ -258,8 +258,15 @@ test_logic(X) :-
 
 
 check_captures(Board, NewBoard, WCapture, BCapture) :-
-    check_horizontal_captures(Board, NewBoard, 0, WCapture, BCapture).
-    %check_vertical_captures(Board, 0, BCapture, WCapture).
+    check_horizontal_captures(Board, TempBoard, 0, HWCapture, HBCapture),
+    check_vertical_captures(TempBoard, NewBoard, 0, VWCapture, VBCapture),
+    % WCapture is VWCapture,
+    % BCapture is (VBCapture + 1).
+    WTemp is (HWCapture + VWCapture),
+    WCapture is WTemp,
+    BTemp is (HBCapture + VBCapture),
+    BCapture is BTemp.
+
 
 
 check_horizontal_captures(Board, NewBoard, 8, WCapture, BCapture).
@@ -298,12 +305,6 @@ check_horizontal_captures(Board, NewBoard, RowNumber, WCapture, BCapture) :-
         
     ).
     %write('3\n'),
-
-
-
-check_vertical_captures(Board, Column, BCapture, WCapture) :-
-    getColumn(Board, Column, FinalColumn).
-
 
 % white_capture(Board, NewBoard, _, _, _, 10, Position).
 %     %Position = 99, !.
@@ -372,3 +373,103 @@ replace([H|T], I, X, [H|R]):-
     replace(T, NI, X, R), !.
 replace(L, _, _, L).
 
+
+
+
+
+check_vertical_captures(Board, NewBoard, 12, WCapture, BCapture).
+check_vertical_captures(Board, NewBoard, ColumnNumber, WCapture, BCapture) :-
+    getColumn(Board, ColumnNumber, ReturningColumn),
+    %write(ReturningRow),
+    white_capture_vertical(Board, TempWBoard, ColumnNumber, ReturningColumn, TempWCapture, 0),
+    black_capture_vertical(Board, TempBBoard, ColumnNumber, ReturningColumn, TempBCapture, 0),
+    %black_capture(Board, NewBoard, RowNumber, ReturningRow, BCapture, 0, Position),
+    NewColumnNumber is ColumnNumber + 1,
+    ( (TempWCapture == 0 , TempBCapture == 0)
+        %no pieces captured in that iteration
+        -> (NewColumnNumber == 12
+            %last iteration
+            ->append(TempWBoard, [], NewBoard),
+            WCapture = TempWCapture,
+            BCapture = TempBCapture,
+            %write(WCapture),nl,write(BCapture),nl,
+            check_vertical_captures(Board, TempWBoard, 12, WCapture, BCapture)
+            %every other iteration
+            ; check_vertical_captures(Board, NewBoard, NewColumnNumber, WCapture, BCapture)
+        )
+        %piece captured, force finish of function
+        ;(TempWCapture == 1
+            %white piece captured
+            ->append(TempWBoard, [], NewBoard),
+            WCapture = TempWCapture,
+            BCapture = 0,
+            check_vertical_captures(Board, TempWBoard, 12, WCapture, BCapture),!
+            %black piece captured
+            ;append(TempBBoard, [], NewBoard),
+            WCapture = 0,
+            BCapture = TempBCapture,
+            check_vertical_captures(Board, TempBBoard, 12, WCapture, BCapture),!
+        )
+        
+    ).
+
+
+white_capture_vertical(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition) :-
+    Second is CurrentPosition + 1,
+    Third is CurrentPosition + 2,
+    %get the 3 elements
+    nth0(CurrentPosition, List, Element1),
+    nth0(Second, List, Element2),
+    nth0(Third, List, Element3),
+
+    ((Element1 == w, Element2 == b, Element3 == w)
+        ->WCapture is 1,
+        %write(List)
+        %replace(List, Second, clear, NewList),
+        %nth0(ListNumber, ReturningRow, NewList),
+        nth0(Third, Board, ReturningRow),
+        replace(ReturningRow, ListNumber, clear, NewList),
+        replace(Board, ListNumber, NewList, NewBoard),
+        !,true
+
+        %append(TestBoard, [], NewBoard),
+        %write_board(NewBoard), halt
+        
+
+        ;NewPosition is CurrentPosition+1,
+        (NewPosition \== 6 
+            ->white_capture_vertical(Board, NewBoard, ListNumber, List, WCapture, NewPosition),!
+            ;WCapture = 0,
+            append(Board, [], NewBoard),!,true
+        )
+    ).
+
+
+black_capture_vertical(Board, NewBoard, ListNumber, List, WCapture, CurrentPosition) :-
+    Second is CurrentPosition + 1,
+    Third is CurrentPosition + 2,
+    %get the 3 elements
+    nth0(CurrentPosition, List, Element1),
+    nth0(Second, List, Element2),
+    nth0(Third, List, Element3),
+
+    ((Element1 == b, Element2 == w, Element3 == b)
+        ->WCapture is 1,
+        %write(List)
+        %replace(List, Second, clear, NewList),
+        nth0(Third, Board, ReturningRow),
+        replace(ReturningRow, ListNumber, clear, NewList),
+        replace(Board, ListNumber, NewList, NewBoard),
+        !,true
+
+        %append(TestBoard, [], NewBoard),
+        %write_board(NewBoard), halt
+        
+
+        ;NewPosition is CurrentPosition+1,
+        (NewPosition \== 6 
+            ->black_capture_vertical(Board, NewBoard, ListNumber, List, WCapture, NewPosition),!
+            ;WCapture = 0,
+            append(Board, [], NewBoard),!,true
+        )
+    ).
