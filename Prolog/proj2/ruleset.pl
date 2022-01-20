@@ -248,12 +248,121 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
 
 % ---------------------------------------------------------------
 
-test_logic(X) :-
-    starting_board(Board),
-    checkLegalMove(Board, 0, 7, 0, 5, R),
-    write(R).
+% Auxiliar functions used on the valid_moves(Board, ListOfValidMoves) function, in the end there is valid_moves(Board, ListOfValidMoves) function.
 
-% consult('/Users/pjpacheco/Desktop/FEUP/3Ano/PFL/project/PFL/Prolog/proj2/ruleset.pl'). %cccv
+iterColumnFront(Board, OriginalRow, ColumnPosition, RowPosition, AuxList, ReturningList, ListOfValidMoves) :-
+    CurrentPosition is RowPosition+1,
+    Test_list = ReturningList,
+    (
+        CurrentPosition \= 8
+    ->  checkLegalMove(Board, ColumnPosition, OriginalRow, ColumnPosition, CurrentPosition, ReturnValue),
+        (
+            ReturnValue == 'True'
+        ->  append(AuxList, [['From:', OriginalRow, ColumnPosition, 'To:', CurrentPosition, ColumnPosition]], ListaAppend),
+            Lista_Test = ListaAppend,
+            iterColumnFront(Board, OriginalRow, ColumnPosition, CurrentPosition, ListaAppend, Lista_Test, ListOfValidMoves)
+        ;   iterColumnFront(Board, OriginalRow, ColumnPosition, CurrentPosition, AuxList, ReturningList, ListOfValidMoves)
+        )
+    ;  copy(Test_list, ListOfValidMoves), !
+    ).
+
+iterColumnBack(Board, OriginalRow, ColumnPosition, RowPosition, AuxList, ReturningList, ListOfValidMoves) :-
+    CurrentPosition is RowPosition-1,
+    Test_list_imdone = ReturningList,
+    (
+        CurrentPosition \= -1
+    ->  checkLegalMove(Board, ColumnPosition, OriginalRow, ColumnPosition, CurrentPosition, ReturnValue),
+        (
+            ReturnValue == 'True'
+        ->  append(AuxList, [['From:', OriginalRow, ColumnPosition, 'To:', CurrentPosition, ColumnPosition]], ListaAppend),
+            Lista_Test = ListaAppend,
+            iterColumnBack(Board, OriginalRow, ColumnPosition, CurrentPosition, ListaAppend, Lista_Test, ListOfValidMoves)
+        ;   iterColumnBack(Board, OriginalRow, ColumnPosition, CurrentPosition, AuxList, ReturningList, ListOfValidMoves)
+        )
+    ;  copy(Test_list_imdone, ListOfValidMoves), !
+    ).
+
+iterRowBack(Board, OriginalRow, OriginalColumn, ColumnPosition, AuxList, ReturningList, ListOfValidMoves) :-
+    CurrentPosition is ColumnPosition-1,
+    Test_list = ReturningList,
+    (
+        CurrentPosition \= -1
+    ->  checkLegalMove(Board, OriginalColumn, OriginalRow, CurrentPosition, OriginalRow, ReturnValue),
+        (
+            ReturnValue == 'True'
+        ->  append(AuxList, [['From:', OriginalRow, OriginalColumn, 'To:', OriginalRow, CurrentPosition]], ListaAppend),
+            Lista_Test = ListaAppend,
+            iterRowBack(Board, OriginalRow, OriginalColumn, CurrentPosition, ListaAppend, Lista_Test, ListOfValidMoves)
+        ;   iterRowBack(Board, OriginalRow, OriginalColumn, CurrentPosition, AuxList, ReturningList, ListOfValidMoves)
+        )
+    ;  copy(Test_list, ListOfValidMoves), !
+    ).
+
+iterRowFront(Board, OriginalRow, OriginalColumn, ColumnPosition, AuxList, ReturningList, ListOfValidMoves) :-
+    CurrentPosition is ColumnPosition+1,
+    Test_list = ReturningList,
+    (
+        CurrentPosition \= 12
+    ->  checkLegalMove(Board, OriginalColumn, OriginalRow, CurrentPosition, OriginalRow, ReturnValue),
+        (
+            ReturnValue == 'True'
+        ->  append(AuxList, [['From:', OriginalRow, OriginalColumn, 'To:', OriginalRow, CurrentPosition]], ListaAppend),
+            Lista_Test = ListaAppend,
+            iterRowFront(Board, OriginalRow, OriginalColumn, CurrentPosition, ListaAppend, Lista_Test, ListOfValidMoves)
+        ;   iterRowFront(Board, OriginalRow, OriginalColumn, CurrentPosition, AuxList, ReturningList, ListOfValidMoves)
+        )
+    ;  copy(Test_list, ListOfValidMoves), !
+    ).
+
+getPieceCoords([H|T], PieceColumn, PieceRow):-
+    nth0(0, T, R),
+    PieceRow = H, PieceColumn = R.
+
+getPieceOnList(Index, List, Piece) :-
+    nth0(Index, List, Piece).
+
+checkValidMovesForPiece(Board, Piece, ListOfValidMoves) :-
+    getPieceCoords(Piece, PieceColumn, PieceRow),
+    iterRowFront(Board, PieceRow, PieceColumn, PieceRow, [], ReturningList, ValidListRF),
+    iterRowBack(Board, PieceRow, PieceColumn, PieceRow, [], ReturningList, ValidListRB),
+    iterColumnFront(Board, PieceRow, PieceColumn, PieceRow, [], ReturningList, ValidListCF),
+    iterColumnBack(Board, PieceRow, PieceColumn, PieceRow, [], ReturningList, ValidListCB),
+    append(ValidListCB, ValidListCF, ValidListColumn),
+    append(ValidListRB, ValidListRF, ValidListRow),
+    append(ValidListRow, ValidListColumn, ValidMoves),
+    ListOfValidMoves = ValidMoves.
+    
+iterRowForPieces(Board, Row, RowNumber, ColumnPosition, TempList, ValidMovesList) :-
+    (
+        ColumnPosition == 12
+    ->  copy(TempList, ValidMovesList), !
+    ;   nth0(ColumnPosition, Row, Element), 
+        (
+            Element == clear
+        ->  C_Test is ColumnPosition+1, 
+            iterRowForPieces(Board, Row, RowNumber, C_Test, TempList, ValidMovesList)
+        ;   checkValidMovesForPiece(Board, [RowNumber, ColumnPosition], MovesList),
+            append(MovesList, TempList, TempList2),
+            C_Test is ColumnPosition+1,
+            iterRowForPieces(Board, Row, RowNumber, C_Test, TempList2, ValidMovesList)
+        )
+    ).
+
+iterBoardFinal(Board, StartingRow, StartingColumn, AuxList, FinalList):-
+    (
+        StartingRow == 8
+    ->  copy(AuxList, FinalList), !
+    ;   getRow(Board, StartingRow, RetRow),
+        iterRowForPieces(Board, RetRow, StartingRow, StartingColumn, [], ValidList),
+        append(AuxList, ValidList, AuxList2),
+        CurrentPosition is StartingRow+1,
+        iterBoardFinal(Board, CurrentPosition, StartingColumn, AuxList2, FinalList)
+    ).
+
+valid_moves(Board, ListOfValidMoves) :-
+    iterBoardFinal(Board, 0, 0, [], ListOfValidMoves).
+
+% ---------------------------------------------------------------
 
 
 
