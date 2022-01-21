@@ -19,7 +19,8 @@ game_loop(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
     ( Player == w 
 
         %white player
-        -> write_board(Board), 
+        ->write('white player s turn\n'), nl,
+        write_board(Board), 
         get_move(Board, NewBoard, w),!,
         check_captures(NewBoard,CapturedBoard, WCapture, BCapture),
         NewWCapture is WCapture + WhiteCaptures,
@@ -28,7 +29,8 @@ game_loop(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
         game_loop(CapturedBoard, b, NewWCapture , NewBCapture, Level)
 
         %black player(AI)
-        ; write_board(Board), 
+        ;write('black player s turn\n'),  nl,
+        write_board(Board), 
         ai_play(Board, NewBoard, b),
         check_captures(NewBoard,CapturedBoard, WCapture, BCapture),
         NewWCapture is WCapture + WhiteCaptures,
@@ -53,7 +55,8 @@ game_loop2(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
     ( Player == w 
 
         %white player
-        -> write_board(Board), 
+        ->write('white player s turn\n'), nl,
+        write_board(Board), 
         get_move(Board, NewBoard, w),!,
         check_captures(NewBoard,CapturedBoard, WCapture, BCapture),
         NewWCapture is WCapture + WhiteCaptures,
@@ -62,7 +65,8 @@ game_loop2(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
         game_loop2(CapturedBoard, b, NewWCapture , NewBCapture, Level)
 
         %black player
-        ; write_board(Board), 
+        ; write('black player s turn\n'), nl, 
+        write_board(Board), 
         get_move(Board, NewBoard, b),!,
         %write_board(NewBoard),!,
         check_captures(NewBoard,CapturedBoard, WCapture, BCapture),
@@ -87,7 +91,8 @@ game_loop3(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
     ( Player == w 
 
         %white player(AI)
-        -> write_board(Board), 
+        -> write('white player s turn\n'), nl, 
+        write_board(Board), 
         ai_play(Board, NewBoard, w),
         check_captures(NewBoard,CapturedBoard, WCapture, BCapture),
         NewWCapture is WCapture + WhiteCaptures,
@@ -97,7 +102,8 @@ game_loop3(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
         game_loop3(NewBoard, b, NewWCapture , NewBCapture, Level)
 
         %black player(AI)
-        ; write_board(Board), 
+        ; write('black player s turn\n'), nl, 
+        write_board(Board), 
         ai_play(Board, NewBoard, b),
         check_captures(NewBoard,CapturedBoard, WCapture, BCapture),
         NewWCapture is WCapture + WhiteCaptures,
@@ -123,7 +129,8 @@ game_loop4(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
     ( Player == b 
 
         %black player
-        -> write_board(Board), 
+        -> write('black player s turn\n'), nl, 
+        write_board(Board), 
         get_move(Board, NewBoard, b),!,
         check_captures(NewBoard,CapturedBoard, WCapture, BCapture),
         NewWCapture is WCapture + WhiteCaptures,
@@ -132,7 +139,8 @@ game_loop4(Board, Player, WhiteCaptures, BlackCaptures, Level) :-
         game_loop4(CapturedBoard, w, NewWCapture , NewBCapture, Level)
 
         %white player(AI)
-        ; write_board(Board), 
+        ; write('white player s turn\n'), nl, 
+        write_board(Board), 
         ai_play(Board, NewBoard, w),
         check_captures(NewBoard,CapturedBoard, WCapture, BCapture),
         NewWCapture is WCapture + WhiteCaptures,
