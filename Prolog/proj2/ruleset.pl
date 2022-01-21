@@ -4,6 +4,7 @@
 
 % Choose a randomly start player 
 % PlayerOne is 1 and PlayerTwo is 3 (because the upperbound is not included in the interval)
+% choosePlayer(+PlayerOne, +PlayerTwo, -FirstToPlay)
 
 choosePlayer(PlayerOne, PlayerTwo, FirstToPlay) :-
     random(PlayerOne, PlayerTwo, FirstToPlay).
@@ -11,6 +12,7 @@ choosePlayer(PlayerOne, PlayerTwo, FirstToPlay) :-
 % ---------------------------------------------------------------
 
 % Changes players turns
+% changeTurn(+CurrentPlayer, -NextPlayer)
 
 changeTurn(CurrentPlayer, NextPlayer) :- 
     (
@@ -22,6 +24,7 @@ changeTurn(CurrentPlayer, NextPlayer) :-
 % ---------------------------------------------------------------
 
 % Checks if it is an horizontal move
+% checkHorizontalMove(+Column, +Row, +FinalColumn, +FinalRow, -ReturnBooleanValue)
 
 checkHorizontalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
     (
@@ -37,6 +40,7 @@ checkHorizontalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
 % ---------------------------------------------------------------
 
 % Checks if it is a vertical move
+% checkVerticalMove(+Column, +Row, +FinalColumn, +FinalRow, -ReturnBooleanValue)
 
 checkVerticalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
     (
@@ -52,6 +56,7 @@ checkVerticalMove(Column, Row, FinalColumn, FinalRow, ReturnBooleanValue) :-
 % ---------------------------------------------------------------
 
 % Checks if the row is valid
+% checkInputRow(+IsValid, -Row)
 
 checkInputRow(IsValid, Row):-
     repeat,
@@ -65,6 +70,7 @@ checkInputRow(IsValid, Row):-
 % ---------------------------------------------------------------
 
 % Checks if the column is valid
+% checkInputColumn(+IsValid, -Column)
 
 checkInputColumn(IsValid, Column):-
     repeat,
@@ -78,6 +84,7 @@ checkInputColumn(IsValid, Column):-
 % ---------------------------------------------------------------
 
 % Returns a Row
+% getRow(+Board, +RowNumber, -ReturningRow)
 
 getRow(Board, RowNumber, ReturningRow) :-
     nth0(RowNumber, Board, ReturningRow).
@@ -86,9 +93,14 @@ getRow(Board, RowNumber, ReturningRow) :-
 
 % Returns a column
 
+% accCp(+L2,+L1)
+% copy(+L,-R)
+
 accCp([],[]).
 accCp([H|T1],[H|T2]) :- accCp(T1,T2).
 copy(L,R) :- accCp(L,R).
+
+% loopRows(+Board, +Rows, +ColumnNumber, +EL, +ReturningColumn, -FinalColumn)
 
 loopRows(Board, Rows, ColumnNumber, EL, ReturningColumn, FinalColumn) :- 
     nth0(Rows, Board, ReturningRow),
@@ -102,12 +114,16 @@ loopRows(Board, Rows, ColumnNumber, EL, ReturningColumn, FinalColumn) :-
     ;  loopRows(Board, S, ColumnNumber, Column, C_Test, FinalColumn)
     ).
 
+% getColumn(+Board, +ColumnNumber, -FinalColumn)
+
 getColumn(Board, ColumnNumber, FinalColumn) :-
     loopRows(Board, 0, ColumnNumber, [], ReturningColumn, FinalColumn).
 
 % ---------------------------------------------------------------
 
 % Checks if there is a piece at the destination position
+
+% checkPieceOnDestination(+RowOrColumn, +Destination, -ReturnBooleanValue)
 
 checkPieceOnDestination(RowOrColumn, Destination, ReturnBooleanValue) :-
     nth0(Destination, RowOrColumn, Piece),
@@ -123,11 +139,16 @@ checkPieceOnDestination(RowOrColumn, Destination, ReturnBooleanValue) :-
 
 % Checks if there is a piece between the original position and the destination position
 
+% list_length(+Xs, -L)
+% list_length(+Xs, +N, -L).
+
 list_length(Xs, L) :- list_length(Xs, 0, L).
 list_length([], L, L).
 list_length([_|Xs], T, L) :-
   T1 is T+1,
   list_length(Xs, T1, L).
+
+% loopBetween(+RowOrColumnToIterate, +OriginalPosition, +DestinationPosition, +CheckInFront, +Len, -ReturnBooleanValue)
 
 loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, Len, ReturnBooleanValue) :-
     (
@@ -187,7 +208,9 @@ loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckIn
             )
         )
     ).
-    
+
+% checkPieceBetween(+RowOrColumnToIterate, +OriginalPosition, +DestinationPosition, +CheckInFront, -ReturnBooleanValue)
+
 checkPieceBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, ReturnBooleanValue):-
     list_length(RowOrColumnToIterate, Len),
     loopBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, CheckInFront, Len, ReturnValue),
@@ -200,6 +223,8 @@ checkPieceBetween(RowOrColumnToIterate, OriginalPosition, DestinationPosition, C
 % ---------------------------------------------------------------
 
 % Checks if the move is legal
+
+% checkLegalMove(+Board, +OriginColumn, +OriginRow, +DestinationColumn, +DestinationRow, -ReturnBooleanValue)
 
 checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow, ReturnBooleanValue) :-
     checkHorizontalMove(OriginColumn, OriginRow, DestinationColumn, DestinationRow, RetHorizontal),
@@ -250,6 +275,8 @@ checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow
 
 % Auxiliar functions used on the valid_moves(Board, ListOfValidMoves) function, in the end there is valid_moves(Board, ListOfValidMoves) function.
 
+% iterColumnFront(+Board, +OriginalRow, +ColumnPosition, +RowPosition, +AuxList, +ReturningList, -ListOfValidMoves)
+
 iterColumnFront(Board, OriginalRow, ColumnPosition, RowPosition, AuxList, ReturningList, ListOfValidMoves) :-
     CurrentPosition is RowPosition+1,
     Test_list = ReturningList,
@@ -265,6 +292,8 @@ iterColumnFront(Board, OriginalRow, ColumnPosition, RowPosition, AuxList, Return
         )
     ;  copy(Test_list, ListOfValidMoves), !
     ).
+
+% iterColumnBack(+Board, +OriginalRow, +ColumnPosition, +RowPosition, +AuxList, +ReturningList, -ListOfValidMoves)
 
 iterColumnBack(Board, OriginalRow, ColumnPosition, RowPosition, AuxList, ReturningList, ListOfValidMoves) :-
     CurrentPosition is RowPosition-1,
@@ -282,6 +311,8 @@ iterColumnBack(Board, OriginalRow, ColumnPosition, RowPosition, AuxList, Returni
     ;  copy(Test_list_imdone, ListOfValidMoves), !
     ).
 
+% iterRowBack(+Board, +OriginalRow, +OriginalColumn, +ColumnPosition, +AuxList, +ReturningList, -ListOfValidMoves)
+
 iterRowBack(Board, OriginalRow, OriginalColumn, ColumnPosition, AuxList, ReturningList, ListOfValidMoves) :-
     CurrentPosition is ColumnPosition-1,
     Test_list = ReturningList,
@@ -297,6 +328,8 @@ iterRowBack(Board, OriginalRow, OriginalColumn, ColumnPosition, AuxList, Returni
         )
     ;  copy(Test_list, ListOfValidMoves), !
     ).
+
+% iterRowFront(+Board, +OriginalRow, +OriginalColumn, +ColumnPosition, +AuxList, +ReturningList, -ListOfValidMoves)
 
 iterRowFront(Board, OriginalRow, OriginalColumn, ColumnPosition, AuxList, ReturningList, ListOfValidMoves) :-
     CurrentPosition is ColumnPosition+1,
@@ -314,12 +347,18 @@ iterRowFront(Board, OriginalRow, OriginalColumn, ColumnPosition, AuxList, Return
     ;  copy(Test_list, ListOfValidMoves), !
     ).
 
+% getPieceCoords(+CoordList, -PieceColumn, -PieceRow)
+
 getPieceCoords([H|T], PieceColumn, PieceRow):-
     nth0(0, T, R),
     PieceRow = H, PieceColumn = R.
 
+% getPieceOnList(+Index, +List, -Piece)
+
 getPieceOnList(Index, List, Piece) :-
     nth0(Index, List, Piece).
+
+% checkValidMovesForPiece(+Board, +Piece, -ListOfValidMoves)
 
 checkValidMovesForPiece(Board, Piece, ListOfValidMoves) :-
     getPieceCoords(Piece, PieceColumn, PieceRow),
@@ -331,7 +370,9 @@ checkValidMovesForPiece(Board, Piece, ListOfValidMoves) :-
     append(ValidListRB, ValidListRF, ValidListRow),
     append(ValidListRow, ValidListColumn, ValidMoves),
     ListOfValidMoves = ValidMoves.
-    
+
+% iterRowForPieces(+Board, +Row, +RowNumber, +ColumnPosition, +TempList, -ValidMovesList)
+
 iterRowForPieces(Board, Row, RowNumber, ColumnPosition, TempList, ValidMovesList) :-
     (
         ColumnPosition == 12
@@ -348,6 +389,8 @@ iterRowForPieces(Board, Row, RowNumber, ColumnPosition, TempList, ValidMovesList
         )
     ).
 
+% iterBoardFinal(+Board, +StartingRow, +StartingColumn, +AuxList, -FinalList)
+
 iterBoardFinal(Board, StartingRow, StartingColumn, AuxList, FinalList):-
     (
         StartingRow == 8
@@ -358,6 +401,8 @@ iterBoardFinal(Board, StartingRow, StartingColumn, AuxList, FinalList):-
         CurrentPosition is StartingRow+1,
         iterBoardFinal(Board, CurrentPosition, StartingColumn, AuxList2, FinalList)
     ).
+
+% valid_moves(+Board, -ListOfValidMoves)
 
 valid_moves(Board, ListOfValidMoves) :-
     iterBoardFinal(Board, 0, 0, [], ListOfValidMoves).
