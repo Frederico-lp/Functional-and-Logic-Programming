@@ -29,15 +29,11 @@ get_move(Board, NewBoard, Player) :-
     (  ReturnBooleanValue == 'True'
     -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard)
     ;  write('Invalid move!'), !, get_move(Board, NewBoard, Player)
-    %;  write('Invalid move!'), nl, !, fail, false
     ).
 
-    %move(Board, ColumnMove, RowMove, FinalColumnMove, FinalRowMove, NewBoard).
 
 
-%NOTA: usar halt. para terminar execuçao de programa
 move(Board, Column, Row, FinalColumn, FinalRow, NewBoard) :-
-    %falta aqui dois nth0 para ver se o local de destino esta 'clear'
     %determine diretion of movement
     (Row =:= FinalRow -> 
         (Column =:= FinalColumn -> 
@@ -78,17 +74,9 @@ verticalMove(Board, Column, Row, FinalRow, NewBoard) :-
     replace(FinalRowList, Column, Element, NewFinalRowList),
     %replace the old row with the new one
     replace(IntermediateBoard, FinalRow, NewFinalRowList, NewBoard).
-    %write('vertical\n').
 
 
 
-% % lista inicial, indice, elemento, lista depois
-% replace([_|T], 0, X, [X|T]).
-% replace([H|T], I, X, [H|R]):- 
-%     I > -1,
-%     NI is I-1,
-%     replace(T, NI, X, R), !.
-% replace(L, _, _, L).
 
 
 % insert element at n-th position on list, 3º argument is new element position after insert
@@ -97,13 +85,8 @@ insert(El, [G | R], P, [G | Res]):-
 	P1 is P - 1,
 	insert(El, R, P1, Res).
 
-% % check if it's the last element of list
-% last'(X,[X]).
-% last'(X,[_|Z]) :- last(X,Z).
-
 
 ai_play(Board, NewBoard, Color) :-
-    %findall(Move, checkLegalMove(Board, OriginColumn, OriginRow, DestinationColumn, DestinationRow, Move), Moves),
     get_pieces(Board, 0, 0, List, BlackList, Color),
     empty_places(Board, 0, 0, List1, ClearList),
     %get initial position
@@ -120,9 +103,6 @@ ai_play(Board, NewBoard, Color) :-
     -> move(Board, Column, Row, FinalColumn, FinalRow, NewBoard)
     ;  !, ai_play(Board, NewBoard, Color)
     ).
-    %move
-    %move(Board, Column, Row, FinalColumn, FinalRow, NewBoard).
-    %random_member(X, Moves).
 
 %add element to the end of the list.
 % element, list, list after insert
